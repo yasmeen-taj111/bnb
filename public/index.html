@@ -208,7 +208,6 @@
                         <h3>Budget Utilization by Department</h3>
                         <canvas id="departmentChart"></canvas>
                         <img src="images/i1.jpeg" style="width:100%; height:auto; margin-top:10px;">
-
                     </div>
                     <div class="chart-card">
                         <h3>Monthly Spending Trend</h3>
@@ -222,7 +221,15 @@
                     </div>
                 </div>
 
-              
+                
+                <div class="activity-card">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Budget Alerts</h3>
+                    <div class="alert-list" id="budgetAlerts">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
                 <div class="activity-card">
                     <h3>Recent Transactions</h3>
                     <div class="activity-list" id="recentTransactions">
@@ -311,6 +318,7 @@
                                     <th>Remaining</th>
                                     <th>Utilization</th>
                                     <th>Actions</th>
+                                    <th>Feedback</th>
                                 </tr>
                             </thead>
                             <tbody id="budgetTableBody">
@@ -464,6 +472,21 @@
                 </button>
             </div>
             <div class="modal-body" id="modalBody">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="modal" id="feedbackModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="feedbackModalTitle">Leave Feedback</h3>
+                <button class="modal-close" id="feedbackModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="feedbackModalBody">
                 <!-- Dynamic content -->
             </div>
         </div>
