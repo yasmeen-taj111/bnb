@@ -2553,9 +2553,350 @@ const ui = {
                 element.textContent = formatCurrency(convertedAmount, currentCurrency);
             }
         });
-    }
+    },
 
+    showChatbot() {
+        console.log('Opening chatbot modal');
+        const modal = document.getElementById('chatbotModal');
+        if (modal) {
+            modal.classList.add('show');
+            const input = document.getElementById('chatbotInput');
+            if (input) {
+                input.focus();
+            }
+        } else {
+            console.error('Chatbot modal not found');
+        }
+    },
+
+    hideChatbot() {
+        document.getElementById('chatbotModal').classList.remove('show');
+    },
+
+    addChatbotMessage(message, isUser = false) {
+        const messagesContainer = document.getElementById('chatbotMessages');
+        if (!messagesContainer) {
+            console.error('Chatbot messages container not found');
+            return;
+        }
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chatbot-message ${isUser ? 'user-message' : 'bot-message'}`;
+
+        const icon = isUser ? 'fas fa-user' : 'fas fa-robot';
+
+
+        let messageContent;
+        if (isUser) {
+            messageContent = message;
+        } else {
+
+            if (typeof marked !== 'undefined') {
+                messageContent = marked.parse(message);
+            } else {
+
+                messageContent = this.simpleMarkdownRender(message);
+            }
+        }
+
+        messageDiv.innerHTML = `
+            <div class="message-content">
+                <i class="${icon}"></i>
+                <div class="message-text">${messageContent}</div>
+            </div>
+        `;
+
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        console.log(`Added ${isUser ? 'user' : 'bot'} message:`, message);
+    },
+
+    simpleMarkdownRender(text) {
+        return text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/`(.*?)`/g, '<code>$1</code>')
+            .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+            .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+            .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+            .replace(/^\* (.*$)/gim, '<li>$1</li>')
+            .replace(/^- (.*$)/gim, '<li>$1</li>')
+            .replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
+            .replace(/\n/g, '<br>');
+    },
+
+    async processChatbotQuery(query) {
+
+        this.addChatbotMessage(query, true);
+
+
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'chatbot-message bot-message';
+        loadingDiv.innerHTML = `
+            <div class="message-content">
+                <i class="fas fa-robot"></i>
+                <div class="chatbot-loading">
+                    <div class="spinner"></div>
+                    <span>AI is thinking...</span>
+                </div>
+            </div>
+        `;
+        document.getElementById('chatbotMessages').appendChild(loadingDiv);
+
+        try {
+
+            let response;
+            if (window.aiChatbot) {
+                console.log('Using AI chatbot for query:', query);
+                const aiResponse = await window.aiChatbot.sendMessage(query);
+
+                if (aiResponse.success) {
+                    response = { content: aiResponse.message };
+                } else {
+                    throw new Error(aiResponse.error || 'AI request failed');
+                }
+            } else {
+                console.log('AI chatbot not available, using mock response');
+                response = this.generateChatbotResponse(query);
+            }
+
+
+            loadingDiv.remove();
+
+
+            this.addChatbotMessage(response.content, false);
+
+
+            if (response.chart) {
+                this.addChatbotChart(response.chart);
+            }
+
+        } catch (error) {
+            console.error('Chatbot error:', error);
+
+
+            loadingDiv.remove();
+
+
+            this.addChatbotMessage(`
+                <p>Sorry, I encountered an error processing your request.</p>
+                <p><strong>Error:</strong> ${error.message}</p>
+                <p>Please try again or contact support if the issue persists.</p>
+            `, false);
+        }
+    },
+
+    async generateChatbotResponse(query) {
+        const lowerQuery = query.toLowerCase();
+
+
+        if (lowerQuery.includes('budget') || lowerQuery.includes('allocation')) {
+            return this.handleBudgetQuery(lowerQuery);
+        }
+
+
+        if (lowerQuery.includes('department') || lowerQuery.includes('dept')) {
+            return this.handleDepartmentQuery(lowerQuery);
+        }
+
+
+        if (lowerQuery.includes('transaction') || lowerQuery.includes('spending') || lowerQuery.includes('expense')) {
+            return this.handleTransactionQuery(lowerQuery);
+        }
+
+
+        if (lowerQuery.includes('project') || lowerQuery.includes('progress')) {
+            return this.handleProjectQuery(lowerQuery);
+        }
+
+
+        if (lowerQuery.includes('help') || lowerQuery.includes('what can you do')) {
+            return {
+                content: `
+                    <p>I can help you with:</p>
+                    <ul>
+                        <li><strong>Budget Analysis:</strong> "Show me budget allocation", "Where did the sports budget go?"</li>
+                        <li><strong>Department Spending:</strong> "Which department spent the most?", "Education department budget"</li>
+                        <li><strong>Transactions:</strong> "Recent transactions", "Show me pending transactions"</li>
+                        <li><strong>Projects:</strong> "Project progress", "Show me active projects"</li>
+                    </ul>
+                    <p>Try asking me something specific about your financial data!</p>
+                `
+            };
+        }
+
+
+        return {
+            content: `
+                <p>I understand you're asking about "${query}". Let me help you find that information.</p>
+                <p>Could you be more specific? For example:</p>
+                <ul>
+                    <li>"Show me the education budget"</li>
+                    <li>"Which department spent the most this month?"</li>
+                    <li>"What are the recent transactions?"</li>
+                </ul>
+            `
+        };
+    },
+
+    handleBudgetQuery(query) {
+
+        const budgetData = {
+            totalAllocated: 50000000, // 5 crores
+            totalSpent: 35000000,     // 3.5 crores
+            departments: [
+                { name: 'Education', allocated: 15000000, spent: 12000000 },
+                { name: 'Healthcare', allocated: 12000000, spent: 8000000 },
+                { name: 'Infrastructure', allocated: 10000000, spent: 9000000 },
+                { name: 'Technology', allocated: 8000000, spent: 4000000 },
+                { name: 'Agriculture', allocated: 5000000, spent: 2000000 }
+            ]
+        };
+
+        const totalAllocated = budgetData.totalAllocated;
+        const totalSpent = budgetData.totalSpent;
+        const remaining = totalAllocated - totalSpent;
+        const utilization = (totalSpent / totalAllocated) * 100;
+
+        let response = `
+            <p><strong>Budget Overview:</strong></p>
+            <ul>
+                <li>Total Allocated: ${formatCurrency(totalAllocated, currentCurrency)}</li>
+                <li>Total Spent: ${formatCurrency(totalSpent, currentCurrency)}</li>
+                <li>Remaining: ${formatCurrency(remaining, currentCurrency)}</li>
+                <li>Utilization: ${utilization.toFixed(1)}%</li>
+            </ul>
+        `;
+
+        if (query.includes('department') || query.includes('breakdown')) {
+            response += `<p><strong>Department Breakdown:</strong></p><ul>`;
+            budgetData.departments.forEach(dept => {
+                const deptUtilization = (dept.spent / dept.allocated) * 100;
+                response += `<li>${dept.name}: ${formatCurrency(dept.allocated, currentCurrency)} allocated, ${formatCurrency(dept.spent, currentCurrency)} spent (${deptUtilization.toFixed(1)}%)</li>`;
+            });
+            response += `</ul>`;
+        }
+
+        return { content: response };
+    },
+
+    handleDepartmentQuery(query) {
+        const departments = [
+            { name: 'Education', allocated: 15000000, spent: 12000000 },
+            { name: 'Healthcare', allocated: 12000000, spent: 8000000 },
+            { name: 'Infrastructure', allocated: 10000000, spent: 9000000 },
+            { name: 'Technology', allocated: 8000000, spent: 4000000 },
+            { name: 'Agriculture', allocated: 5000000, spent: 2000000 }
+        ];
+
+
+        let targetDept = null;
+        for (const dept of departments) {
+            if (query.includes(dept.name.toLowerCase())) {
+                targetDept = dept;
+                break;
+            }
+        }
+
+        if (targetDept) {
+            const utilization = (targetDept.spent / targetDept.allocated) * 100;
+            return {
+                content: `
+                    <p><strong>${targetDept.name} Department:</strong></p>
+                    <ul>
+                        <li>Allocated: ${formatCurrency(targetDept.allocated, currentCurrency)}</li>
+                        <li>Spent: ${formatCurrency(targetDept.spent, currentCurrency)}</li>
+                        <li>Remaining: ${formatCurrency(targetDept.allocated - targetDept.spent, currentCurrency)}</li>
+                        <li>Utilization: ${utilization.toFixed(1)}%</li>
+                    </ul>
+                `
+            };
+        }
+
+
+        let response = `<p><strong>Department Spending Summary:</strong></p><ul>`;
+        departments.forEach(dept => {
+            const utilization = (dept.spent / dept.allocated) * 100;
+            response += `<li>${dept.name}: ${formatCurrency(dept.spent, currentCurrency)} spent (${utilization.toFixed(1)}% of budget)</li>`;
+        });
+        response += `</ul>`;
+
+        return { content: response };
+    },
+
+    handleTransactionQuery(query) {
+        const transactions = [
+            { id: 'TXN001', description: 'Purchase of lab equipment', amount: 120000, department: 'Education', status: 'Approved' },
+            { id: 'TXN002', description: 'Hospital supplies', amount: 85000, department: 'Healthcare', status: 'Pending' },
+            { id: 'TXN003', description: 'Road maintenance', amount: 250000, department: 'Infrastructure', status: 'Approved' },
+            { id: 'TXN004', description: 'Software licenses', amount: 45000, department: 'Technology', status: 'Approved' },
+            { id: 'TXN005', description: 'Farming equipment', amount: 75000, department: 'Agriculture', status: 'Pending' }
+        ];
+        const recentTransactions = transactions.slice(0, 5);
+
+        let response = `<p><strong>Recent Transactions:</strong></p><ul>`;
+        recentTransactions.forEach(txn => {
+            const statusIcon = txn.status === 'Approved' ? '✅' : txn.status === 'Pending' ? '⏳' : '❌';
+            response += `<li>${statusIcon} ${txn.description} - ${formatCurrency(txn.amount, currentCurrency)} (${txn.department})</li>`;
+        });
+        response += `</ul>`;
+
+        return { content: response };
+    },
+
+    handleProjectQuery(query) {
+        const projects = [
+            { name: 'Digital Education Initiative', budget: 5000000, status: 'Active' },
+            { name: 'Smart City Infrastructure', budget: 8000000, status: 'Active' },
+            { name: 'Healthcare Modernization', budget: 6000000, status: 'Active' },
+            { name: 'Agricultural Technology', budget: 3000000, status: 'Planning' },
+            { name: 'Green Energy Project', budget: 4000000, status: 'Active' }
+        ];
+        const activeProjects = projects.filter(p => p.status === 'Active');
+
+        let response = `<p><strong>Active Projects:</strong></p><ul>`;
+        activeProjects.forEach(project => {
+            const progress = Math.floor(Math.random() * 100);
+            response += `<li>${project.name} - ${formatCurrency(project.budget, currentCurrency)} (${progress}% complete)</li>`;
+        });
+        response += `</ul>`;
+
+        return { content: response };
+    },
+
+    addChatbotChart(chartData) {
+        const messagesContainer = document.getElementById('chatbotMessages');
+        const chartDiv = document.createElement('div');
+        chartDiv.className = 'chatbot-message bot-message';
+        chartDiv.innerHTML = `
+            <div class="message-content">
+                <i class="fas fa-robot"></i>
+                <div class="chatbot-chart">
+                    <canvas id="chatbotChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        `;
+
+        messagesContainer.appendChild(chartDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+
+        setTimeout(() => {
+            this.initializeChatbotChart(chartData);
+        }, 100);
+    },
+
+    initializeChatbotChart(chartData) {
+        const canvas = document.getElementById('chatbotChart');
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        new Chart(ctx, chartData);
+    }
 };
+
+
 
 
 const auth = {
