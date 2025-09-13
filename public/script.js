@@ -19,6 +19,53 @@ const formatCurrency = (amount) => {
 
 
 
+
+const institutionData = {
+    "Govt College A": ["Education", "Healthcare", "Infrastructure"],
+    "Govt Hospital B": ["Healthcare", "Technology"],
+    "City Municipality": ["Infrastructure", "Agriculture", "Technology"]
+};
+
+
+const institution = document.getElementById("institutionFilter");
+const department = document.getElementById("departmentFilter");
+
+
+Object.keys(institutionData).forEach(inst => {
+    const option = document.createElement("option");
+    option.value = inst;
+    option.textContent = inst;
+    institution.appendChild(option);
+});
+
+
+institution.addEventListener("change", function () {
+    department.innerHTML = `<option value="">All Departments</option>`;
+
+    if (this.value && institutionData[this.value]) {
+        institutionData[this.value].forEach(dep => {
+            const option = document.createElement("option");
+            option.value = dep;
+            option.textContent = dep;
+            department.appendChild(option);
+        });
+    }
+});
+
+
+[institution, department].forEach(select => {
+    select.addEventListener("change", function () {
+        console.log("Institution:", institution.value || "All");
+        console.log("Department:", department.value || "All");
+
+    });
+});
+
+
+
+
+
+
 const transaction = [
     {
         id: "TXN12345",
