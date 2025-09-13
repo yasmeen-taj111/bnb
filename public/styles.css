@@ -2971,6 +2971,445 @@ code {
   color: rgba(255, 255, 255, 0.8);
 }
 
+[data-theme="dark"] .btn-primary {
+  background: var(--accent);
+  color: white;
+  border: 1px solid var(--accent);
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: white;
+}
+
+[data-theme="dark"] .btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background: var(--bg-primary);
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .btn-success {
+  background: var(--success);
+  color: white;
+  border: 1px solid var(--success);
+}
+
+[data-theme="dark"] .btn-success:hover {
+  background: #1e7e34;
+  border-color: #1e7e34;
+  color: white;
+}
+
+[data-theme="dark"] .btn-danger {
+  background: var(--danger);
+  color: white;
+  border: 1px solid var(--danger);
+}
+
+[data-theme="dark"] .btn-danger:hover {
+  background: #c82333;
+  border-color: #c82333;
+  color: white;
+}
+
+[data-theme="dark"] .btn-info {
+  background: var(--info);
+  color: white;
+  border: 1px solid var(--info);
+}
+
+[data-theme="dark"] .btn-info:hover {
+  background: #0c5460;
+  border-color: #0c5460;
+  color: white;
+}
+
+[data-theme="dark"] .btn-warning {
+  background: var(--warning);
+  color: #212529;
+  border: 1px solid var(--warning);
+}
+
+[data-theme="dark"] .btn-warning:hover {
+  background: #e0a800;
+  border-color: #e0a800;
+  color: #212529;
+}
+
+[data-theme="dark"] .view-institution-btn,
+[data-theme="dark"] .edit-institution-btn,
+[data-theme="dark"] .view-project-btn,
+[data-theme="dark"] .view-progress-btn,
+[data-theme="dark"] .view-transaction-btn {
+  background: var(--accent);
+  color: white !important;
+  border: 1px solid var(--accent);
+}
+
+[data-theme="dark"] .view-institution-btn:hover,
+[data-theme="dark"] .edit-institution-btn:hover,
+[data-theme="dark"] .view-project-btn:hover,
+[data-theme="dark"] .view-progress-btn:hover,
+[data-theme="dark"] .view-transaction-btn:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: white !important;
+}
+
+[data-theme="dark"] .approve-transaction-btn {
+  background: var(--success);
+  color: white !important;
+  border: 1px solid var(--success);
+}
+
+[data-theme="dark"] .approve-transaction-btn:hover {
+  background: #1e7e34;
+  border-color: #1e7e34;
+  color: white !important;
+}
+
+[data-theme="dark"] .reject-transaction-btn {
+  background: var(--danger);
+  color: white !important;
+  border: 1px solid var(--danger);
+}
+
+[data-theme="dark"] .reject-transaction-btn:hover {
+  background: #c82333;
+  border-color: #c82333;
+  color: white !important;
+}
+
+[data-theme="dark"] .btn-small {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+}
+
+[data-theme="dark"] .btn-small.btn-primary {
+  background: var(--accent);
+  color: white !important;
+  border: 1px solid var(--accent);
+}
+
+[data-theme="dark"] .btn-small.btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .btn-small.btn-success {
+  background: var(--success);
+  color: white !important;
+  border: 1px solid var(--success);
+}
+
+[data-theme="dark"] .btn-small.btn-danger {
+  background: var(--danger);
+  color: white !important;
+  border: 1px solid var(--danger);
+}
+
+[data-theme="dark"] .btn-small.btn-info {
+  background: var(--info);
+  color: white !important;
+  border: 1px solid var(--info);
+}
+
+[data-theme="dark"] .btn i {
+  color: inherit;
+}
+
+[data-theme="dark"] .btn-small i {
+  color: inherit;
+  font-size: 0.8rem;
+}
+
+[data-theme="dark"] .btn {
+  text-shadow: none;
+}
+
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .btn-success,
+[data-theme="dark"] .btn-danger,
+[data-theme="dark"] .btn-info {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .btn-secondary {
+  text-shadow: none;
+}
+
+[data-theme="dark"] .btn span,
+[data-theme="dark"] .btn-small span {
+  color: inherit;
+}
+
+[data-theme="dark"] .card-actions .btn {
+  margin: 0.25rem;
+}
+
+[data-theme="dark"] .card-actions .btn-small {
+  margin: 0.25rem;
+}
+
+[data-theme="dark"] .project-progress {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+[data-theme="dark"] .progress-section {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+[data-theme="dark"] .progress-section h4 {
+  color: var(--text-primary);
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .progress-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+[data-theme="dark"] .progress-header {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .progress-header span {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .progress-bar-container {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  height: 20px;
+  margin: 0.5rem 0;
+}
+
+[data-theme="dark"] .progress-bar {
+  background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+[data-theme="dark"] .progress-details {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+[data-theme="dark"] .status-grid {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+[data-theme="dark"] .status-item {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.75rem;
+}
+
+[data-theme="dark"] .status-item label {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+[data-theme="dark"] .status-item span {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .text-danger {
+  color: var(--danger) !important;
+}
+
+[data-theme="dark"] .text-warning {
+  color: var(--warning) !important;
+}
+
+[data-theme="dark"] .text-success {
+  color: var(--success) !important;
+}
+
+[data-theme="dark"] .institution-details {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+[data-theme="dark"] .detail-section {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+[data-theme="dark"] .detail-section h4 {
+  color: var(--text-primary);
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .detail-grid {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+[data-theme="dark"] .detail-item {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+[data-theme="dark"] .detail-item:last-child {
+  margin-bottom: 0;
+}
+
+[data-theme="dark"] .detail-item label {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+[data-theme="dark"] .detail-item span {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .stats-grid {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+[data-theme="dark"] .stat-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 1rem;
+  text-align: center;
+}
+
+[data-theme="dark"] .stat-card .stat-value {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+[data-theme="dark"] .stat-card .stat-label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+[data-theme="dark"] .status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+[data-theme="dark"] .status-badge.status-active {
+  background: var(--success);
+  color: white;
+}
+
+[data-theme="dark"] .status-badge.status-planning {
+  background: var(--warning);
+  color: #212529;
+}
+
+[data-theme="dark"] .status-badge.status-completed {
+  background: var(--info);
+  color: white;
+}
+
+[data-theme="dark"] .status-badge.status-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+[data-theme="dark"] .status-badge.status-approved {
+  background: #d4edda;
+  color: #155724;
+}
+
+[data-theme="dark"] .status-badge.status-rejected {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+[data-theme="dark"] .form-actions {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: 1.5rem;
+  margin: 1rem -2rem -2rem -2rem;
+  border-radius: 0 0 12px 12px;
+}
+
+[data-theme="dark"] .form-actions .btn {
+  margin: 0 0.5rem 0 0;
+}
+
+[data-theme="dark"] .form-actions .btn:last-child {
+  margin-right: 0;
+}
+
+[data-theme="dark"] .modal-content {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .modal-header {
+  background: var(--bg-secondary);
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .modal-header h3 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .modal-close {
+  color: var(--text-secondary);
+  background: transparent;
+}
+
+[data-theme="dark"] .modal-close:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .modal-body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
 footer {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
