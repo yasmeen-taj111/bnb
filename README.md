@@ -62,13 +62,15 @@ FundRadar is a comprehensive financial transparency platform built with Node.js,
 git clone https://github.com/yasmeen-taj111/bnb.git
 
 2. **Install dependencies**
+
 npm install
 
-### Or using yarn
+Or using yarn:
 yarn install
 
 3. **Set up environment variables**
 cp .env.example .env
+
 
 Edit the `.env` file with your configuration:
 
@@ -90,24 +92,24 @@ AI_TEMPERATURE=0.7
 AI_USE_MOCK_RESPONSES=false
 
 4. **Start MongoDB service**
-### Ubuntu/Debian
+Ubuntu/Debian:
 sudo systemctl start mongodb
 
-### macOS
+macOS:
 brew services start mongodb
 
-### Windows
+Windows:
 Start MongoDB service from Services or run `mongod`
 
 5. **Create the database**
-mongo
+mongo:
 use fundradar
 
 6. **Start the application**
 npm start
 
-### Or using yarn
-# yarn start
+Or using yarn:
+yarn start
 
 7. **Access the application**
 Open your browser and navigate to http://localhost:3002
