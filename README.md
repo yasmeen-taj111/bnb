@@ -59,8 +59,8 @@ FundRadar is a comprehensive financial transparency platform built with Node.js,
 ### Steps
 
 1. **Clone the repository**
-git clone https://github.com/yasmeen-taj111/bnb.git
 
+   git clone: https://github.com/yasmeen-taj111/bnb.git
 2. **Install dependencies**
 
    npm install
@@ -108,12 +108,14 @@ git clone https://github.com/yasmeen-taj111/bnb.git
    use fundradar
 
 6. **Start the application**
+   
    npm start
 
    Or using yarn:
    yarn start
 
 7. **Access the application**
+
    Open your browser and navigate to http://localhost:3002
 
 ---
