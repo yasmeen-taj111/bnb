@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        button { margin: 5px; padding: 10px 15px; }
+        .btn-primary { background: #007bff; color: white; border: none; }
+        .btn-secondary { background: #6c757d; color: white; border: none; }
+        .btn-success { background: #28a745; color: white; border: none; }
+        .btn-danger { background: #dc3545; color: white; border: none; }
+    </style>
+</head>
+<body>
+    <h1>Button Functionality Test</h1>
+    
+    <div class="test-section">
+        <h3>Feedback Buttons Test</h3>
+        <button class="btn-primary" onclick="showFeedbackModal('Test Department', 'dept1')">Add Feedback</button>
+        <button class="btn-secondary" onclick="viewFeedbackDetails('Test Department', 'dept1')">View Feedback</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>Project Buttons Test</h3>
+        <button class="btn-primary" onclick="viewProject('proj1')">View Project</button>
+        <button class="btn-secondary" onclick="viewProjectProgress('proj1')">View Progress</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>Transaction Buttons Test</h3>
+        <button class="btn-primary" onclick="viewTransactionDetails('txn1')">View Transaction</button>
+        <button class="btn-success" onclick="approveTransaction('txn1')">Approve</button>
+        <button class="btn-danger" onclick="rejectTransaction('txn1')">Reject</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>Institution Buttons Test</h3>
+        <button class="btn-primary" onclick="viewInstitution('inst1')">View Institution</button>
+        <button class="btn-secondary" onclick="editInstitution('inst1')">Edit Institution</button>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+    
+        console.log('Testing function accessibility...');
+        console.log('showFeedbackModal:', typeof showFeedbackModal);
+        console.log('viewProject:', typeof viewProject);
+        console.log('viewProjectProgress:', typeof viewProjectProgress);
+        console.log('viewTransactionDetails:', typeof viewTransactionDetails);
+        console.log('approveTransaction:', typeof approveTransaction);
+        console.log('rejectTransaction:', typeof rejectTransaction);
+        console.log('viewInstitution:', typeof viewInstitution);
+        console.log('editInstitution:', typeof editInstitution);
+    </script>
+</body>
+</html>
