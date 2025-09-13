@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FundRadar Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .chart-container { width: 400px; height: 300px; margin: 20px 0; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>FundRadar Test Page</h1>
+    
+    <h2>Test Charts</h2>
+    <div class="chart-container">
+        <canvas id="testChart"></canvas>
+    </div>
+    
+    <h2>Test Table</h2>
+    <table id="testTable">
+        <thead>
+            <tr>
+                <th>Department</th>
+                <th>Allocated</th>
+                <th>Spent</th>
+                <th>Remaining</th>
+                <th>Utilization</th>
+            </tr>
+        </thead>
+        <tbody id="testTableBody">
+        </tbody>
+    </table>
+
+    <script>
+        
+        const ctx = document.getElementById('testChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Education', 'Healthcare', 'Infrastructure', 'Agriculture', 'Technology'],
+                datasets: [{
+                    data: [15000000, 12000000, 10000000, 8000000, 5000000],
+                    backgroundColor: ['#667eea', '#28a745', '#dc3545', '#ffc107', '#17a2b8']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Budget Allocation by Department'
+                    }
+                }
+            }
+        });
+
+       
+        const sampleData = [
+            { department: 'Education', allocated: 15000000, spent: 9500000, remaining: 5500000, utilization: 63.3 },
+            { department: 'Healthcare', allocated: 12000000, spent: 7800000, remaining: 4200000, utilization: 65.0 },
+            { department: 'Infrastructure', allocated: 10000000, spent: 6500000, remaining: 3500000, utilization: 65.0 },
+            { department: 'Agriculture', allocated: 8000000, spent: 5200000, remaining: 2800000, utilization: 65.0 },
+            { department: 'Technology', allocated: 5000000, spent: 3000000, remaining: 2000000, utilization: 60.0 }
+        ];
+
+        const formatCurrency = (amount) => {
+            return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR'
+            }).format(amount);
+        };
+
+        const tbody = document.getElementById('testTableBody');
+        tbody.innerHTML = sampleData.map(dept => `
+            <tr>
+                <td>${dept.department}</td>
+                <td>${formatCurrency(dept.allocated)}</td>
+                <td>${formatCurrency(dept.spent)}</td>
+                <td>${formatCurrency(dept.remaining)}</td>
+                <td>${Math.round(dept.utilization)}%</td>
+            </tr>
+        `).join('');
+
+        console.log('Test page loaded successfully!');
+    </script>
+</body>
+</html>
