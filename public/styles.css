@@ -1222,6 +1222,18 @@ footer {
   body {
     font-size: 14px;
   }
+
+  .nav-container {
+    padding: 0 1rem;
+  }
+
+  .nav-brand {
+    font-size: 1.2rem;
+  }
+
+  .nav-brand i {
+    font-size: 1.5rem;
+  }
   
   .nav-menu {
     display: none;
@@ -1233,6 +1245,7 @@ footer {
     flex-direction: column;
     padding: 1rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    gap: 1rem;
   }
 
   .nav-menu.show {
@@ -1241,6 +1254,11 @@ footer {
 
   .nav-toggle {
     display: block;
+  }
+  
+  .nav-link {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
   }
 
   .main-content {
