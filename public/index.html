@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FundRadar - Financial Transparency Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-chart-line"></i>
+                <span>FundRadar</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="#" class="nav-link" data-page="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-link" data-page="institutions">
+                    <i class="fas fa-building"></i>
+                    Institutions
+                </a>
+                <a href="#" class="nav-link" data-page="budgets">
+                    <i class="fas fa-wallet"></i>
+                    Budgets
+                </a>
+                <a href="#" class="nav-link" data-page="transactions">
+                    <i class="fas fa-exchange-alt"></i>
+                    Transactions
+                </a>
+                <a href="#" class="nav-link" data-page="projects">
+                    <i class="fas fa-project-diagram"></i>
+                    Projects
+                </a>
+            </div>
+            <div class="nav-user">
+                <div class="user-menu" id="userMenu">
+                    <button class="user-btn" id="userBtn">
+                        <i class="fas fa-user"></i>
+                        <span id="userName">Guest</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="#" id="profileLink">
+                            <i class="fas fa-user-edit"></i>
+                            Profile
+                        </a>
+                        <a href="#" id="logoutLink">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+   
+    <main class="main-content">
+        
+        <div class="page" id="loginPage" style="display: none;">
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="login-header">
+                        <i class="fas fa-chart-line"></i>
+                        <h1>FundRadar</h1>
+                        <p>Bringing clarity and trust to institutional finances</p>
+                    </div>
+                    
+                    <form class="login-form" id="loginForm">
+                        <div class="form-group">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Sign In
+                        </button>
+                    </form>
+
+                    <div class="login-footer">
+                        <p>Don't have an account? <a href="#" id="showRegister">Register here</a></p>
+                    </div>
+                </div>
+
+                <div class="register-card" id="registerCard" style="display: none;">
+                    <div class="login-header">
+                        <i class="fas fa-user-plus"></i>
+                        <h1>Create Account</h1>
+                        <p>Join the transparency movement</p>
+                    </div>
+                    
+                    <form class="login-form" id="registerForm">
+                        <div class="form-group">
+                            <label for="registerName">Full Name</label>
+                            <input type="text" id="registerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">Email</label>
+                            <input type="email" id="registerEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Password</label>
+                            <input type="password" id="registerPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerRole">Role</label>
+                            <select id="registerRole">
+                                <option value="viewer">Viewer</option>
+                                <option value="department_head">Department Head</option>
+                                <option value="institution_admin">Institution Admin</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i>
+                            Create Account
+                        </button>
+                    </form>
+
+                    <div class="login-footer">
+                        <p>Already have an account? <a href="#" id="showLogin">Sign in here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+  
+        <div class="page" id="dashboardPage">
+            <div class="page-header">
+                <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+                <p>Financial overview and key metrics</p>
+            </div>
+
+            <div class="dashboard-grid">
+               
+                <div class="summary-cards">
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 id="totalInstitutions">0</h3>
+                            <p>Institutions</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 id="totalBudget">₹0</h3>
+                            <p>Total Budget</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 id="totalSpent">₹0</h3>
+                            <p>Total Spent</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 id="totalTransactions">0</h3>
+                            <p>Transactions</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 id="remainingBalance">₹0</h3>
+                            <p>Remaining Balance</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 id="utilizationPercentage">0%</h3>
+                            <p>Budget Utilization</p>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="chart-container">
+                    <div class="chart-card">
+                        <h3>Budget Utilization by Department</h3>
+                        <canvas id="departmentChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Monthly Spending Trend</h3>
+                        <canvas id="spendingChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Budget Allocation by Category</h3>
+                        <canvas id="categoryPieChart"></canvas>
+                    </div>
+                </div>
+
+              
+                <div class="activity-card">
+                    <h3>Recent Transactions</h3>
+                    <div class="activity-list" id="recentTransactions">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+      
+        <div class="page" id="institutionsPage" style="display: none;">
+            <div class="page-header">
+                <h1><i class="fas fa-building"></i> Institutions</h1>
+                <button class="btn btn-primary" id="addInstitutionBtn">
+                    <i class="fas fa-plus"></i>
+                    Add Institution
+                </button>
+            </div>
+
+            <div class="institutions-grid" id="institutionsGrid">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+
+        
+        <div class="page" id="budgetsPage" style="display: none;">
+            <div class="page-header">
+                <h1><i class="fas fa-wallet"></i> Budget Overview</h1>
+                <div class="page-filters">
+                    <select id="institutionFilter">
+                        <option value="">All Institutions</option>
+                    </select>
+                    <select id="departmentFilter">
+                        <option value="">All Departments</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="budget-container">
+                <div class="budget-summary">
+                    <div class="budget-card">
+                        <h3>Budget Summary</h3>
+                        <div class="budget-stats">
+                            <div class="stat">
+                                <span class="stat-label">Total Allocated</span>
+                                <span class="stat-value" id="budgetAllocated">₹0</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Total Spent</span>
+                                <span class="stat-value" id="budgetSpent">₹0</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Remaining</span>
+                                <span class="stat-value" id="budgetRemaining">₹0</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Utilization</span>
+                                <span class="stat-value" id="budgetUtilization">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="budget-charts">
+                    <div class="chart-card">
+                        <h3>Department Budget Breakdown</h3>
+                        <canvas id="departmentBudgetChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Category Spending</h3>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="budget-details">
+                    <h3>Department Details</h3>
+                    <div class="table-container">
+                        <table class="data-table" id="budgetTable">
+                            <thead>
+                                <tr>
+                                    <th>Department</th>
+                                    <th>Allocated</th>
+                                    <th>Spent</th>
+                                    <th>Remaining</th>
+                                    <th>Utilization</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="budgetTableBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+          
+                <div class="budget-details">
+                    <h3>Detailed Spending Analysis</h3>
+                    <p class="text-muted mb-3">Comprehensive breakdown of budget spending to ensure transparency and prevent corruption</p>
+                    <div class="table-container">
+                        <table class="data-table" id="detailedSpendingTable">
+                            <thead>
+                                <tr>
+                                    <th>Department</th>
+                                    <th>Category</th>
+                                    <th>Transaction ID</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Approved By</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detailedSpendingTableBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    
+        <div class="page" id="transactionsPage" style="display: none;">
+            <div class="page-header">
+                <h1><i class="fas fa-exchange-alt"></i> Transactions</h1>
+                <button class="btn btn-primary" id="addTransactionBtn">
+                    <i class="fas fa-plus"></i>
+                    Add Transaction
+                </button>
+            </div>
+
+            <div class="filters-container">
+                <div class="filter-group">
+                    <label>Type</label>
+                    <select id="transactionTypeFilter">
+                        <option value="">All Types</option>
+                        <option value="expense">Expense</option>
+                        <option value="income">Income</option>
+                        <option value="transfer">Transfer</option>
+                        <option value="adjustment">Adjustment</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Department</label>
+                    <select id="transactionDepartmentFilter">
+                        <option value="">All Departments</option>
+                        <option value="Education">Education</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Infrastructure">Infrastructure</option>
+                        <option value="Agriculture">Agriculture</option>
+                        <option value="Technology">Technology</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Category</label>
+                    <select id="transactionCategoryFilter">
+                        <option value="">All Categories</option>
+                        <option value="Personnel">Personnel</option>
+                        <option value="Equipment">Equipment</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Utilities">Utilities</option>
+                        <option value="Grant">Grant</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="transactionStatusFilter">
+                        <option value="">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Date Range</label>
+                    <input type="date" id="startDateFilter">
+                    <input type="date" id="endDateFilter">
+                </div>
+                <button class="btn btn-secondary" id="applyFiltersBtn">
+                    <i class="fas fa-filter"></i>
+                    Apply Filters
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table" id="transactionsTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Department</th>
+                            <th>Project</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsTableBody">
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination" id="transactionsPagination">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+
+        
+        <div class="page" id="projectsPage" style="display: none;">
+            <div class="page-header">
+                <h1><i class="fas fa-project-diagram"></i> Projects</h1>
+                <button class="btn btn-primary" id="addProjectBtn">
+                    <i class="fas fa-plus"></i>
+                    Add Project
+                </button>
+            </div>
+
+            <div class="projects-grid" id="projectsGrid">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </main>
+
+    
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Modal Title</h3>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+ 
+    <div class="toast-container" id="toastContainer">
+        <!-- Dynamic content -->
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
