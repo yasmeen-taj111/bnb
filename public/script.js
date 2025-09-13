@@ -17,7 +17,35 @@ const formatCurrency = (amount) => {
     }).format(amount);
 };
 
+const budgetData = [
+    { department: "Education", allocated: "₹1.5 Cr", spent: "₹95 L", remaining: "₹55 L", utilization: "63%" },
+    { department: "Healthcare", allocated: "₹1.2 Cr", spent: "₹78 L", remaining: "₹42 L", utilization: "65%" },
+    { department: "Infrastructure", allocated: "₹1.0 Cr", spent: "₹65 L", remaining: "₹35 L", utilization: "65%" },
+    { department: "Agriculture", allocated: "₹80 L", spent: "₹52 L", remaining: "₹28 L", utilization: "65%" },
+    { department: "Technology", allocated: "₹50 L", spent: "₹30 L", remaining: "₹20 L", utilization: "60%" },
+];
 
+const tbody = document.getElementById("budgetTableBody");
+
+budgetData.forEach((row) => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${row.department}</td>
+      <td>${row.allocated}</td>
+      <td>${row.spent}</td>
+      <td>${row.remaining}</td>
+      <td>${row.utilization}</td>
+      <td><button onclick="viewDetails('${row.department}')">View</button></td>
+    `;
+
+    tbody.appendChild(tr);
+});
+
+function viewDetails(department) {
+    alert("Viewing details for: " + department);
+
+}
 
 
 
