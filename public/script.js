@@ -524,6 +524,10 @@ const ui = {
             console.log('Loading recent transactions...');
             await this.loadRecentTransactions();
 
+            // Load budget alerts
+            console.log('Loading budget alerts...');
+            this.loadBudgetAlerts(sampleData);
+
             console.log('Dashboard loaded successfully!');
 
         } catch (error) {
@@ -538,14 +542,14 @@ const ui = {
         return {
             institutions: 5,
             totalBudget: 50000000, // 5 crores
-            totalSpent: 32000000,  // 3.2 crores
+            totalSpent: 34550000,  // 3.455 crores (updated to match department spending)
             totalTransactions: 1247,
             departmentData: [
-                { name: 'Education', allocated: 15000000, spent: 9500000, remaining: 5500000 },
-                { name: 'Healthcare', allocated: 12000000, spent: 7800000, remaining: 4200000 },
-                { name: 'Infrastructure', allocated: 10000000, spent: 6500000, remaining: 3500000 },
-                { name: 'Agriculture', allocated: 8000000, spent: 5200000, remaining: 2800000 },
-                { name: 'Technology', allocated: 5000000, spent: 3000000, remaining: 2000000 }
+                { name: 'Education', allocated: 15000000, spent: 14250000, remaining: 750000 }, // 95% - High Alert
+                { name: 'Healthcare', allocated: 12000000, spent: 9600000, remaining: 2400000 }, // 80% - Medium Alert
+                { name: 'Infrastructure', allocated: 10000000, spent: 6500000, remaining: 3500000 }, // 65% - Normal
+                { name: 'Agriculture', allocated: 8000000, spent: 1200000, remaining: 6800000 }, // 15% - Low Alert
+                { name: 'Technology', allocated: 5000000, spent: 3000000, remaining: 2000000 } // 60% - Normal
             ],
             categoryData: [
                 { name: 'Personnel', amount: 15000000 },
@@ -561,8 +565,21 @@ const ui = {
     loadDashboardCharts(sampleData) {
         console.log('Loading dashboard charts with data:', sampleData);
 
+        // Check if Chart.js is loaded
+        if (typeof Chart === 'undefined') {
+            console.error('Chart.js not loaded, retrying...');
+            setTimeout(() => this.loadDashboardCharts(sampleData), 100);
+            return;
+        }
 
-        const deptCtx = document.getElementById('departmentChart').getContext('2d');
+        // Department Chart
+        const deptCanvas = document.getElementById('departmentChart');
+        if (!deptCanvas) {
+            console.error('Department chart canvas not found');
+            return;
+        }
+
+        const deptCtx = deptCanvas.getContext('2d');
         if (charts.department) charts.department.destroy();
 
         charts.department = new Chart(deptCtx, {
@@ -610,7 +627,14 @@ const ui = {
         });
 
 
-        const spendingCtx = document.getElementById('spendingChart').getContext('2d');
+        // Spending Chart
+        const spendingCanvas = document.getElementById('spendingChart');
+        if (!spendingCanvas) {
+            console.error('Spending chart canvas not found');
+            return;
+        }
+
+        const spendingCtx = spendingCanvas.getContext('2d');
         if (charts.spending) charts.spending.destroy();
 
         charts.spending = new Chart(spendingCtx, {
@@ -653,7 +677,14 @@ const ui = {
         });
 
 
-        const categoryPieCtx = document.getElementById('categoryPieChart').getContext('2d');
+        // Category Pie Chart
+        const categoryPieCanvas = document.getElementById('categoryPieChart');
+        if (!categoryPieCanvas) {
+            console.error('Category pie chart canvas not found');
+            return;
+        }
+
+        const categoryPieCtx = categoryPieCanvas.getContext('2d');
         if (charts.categoryPie) charts.categoryPie.destroy();
 
         charts.categoryPie = new Chart(categoryPieCtx, {
@@ -695,6 +726,8 @@ const ui = {
                 }
             }
         });
+
+        console.log('All dashboard charts initialized successfully!');
     },
 
     async loadRecentTransactions() {
@@ -728,6 +761,92 @@ const ui = {
             const container = document.getElementById('recentTransactions');
             container.innerHTML = '<p class="text-muted">Error loading transactions</p>';
         }
+    },
+
+    loadBudgetAlerts(sampleData) {
+        const alerts = this.detectBudgetAnomalies(sampleData);
+        const container = document.getElementById('budgetAlerts');
+
+        if (alerts.length === 0) {
+            container.innerHTML = '<p class="text-muted">No budget alerts at this time</p>';
+            return;
+        }
+
+        container.innerHTML = alerts.map(alert => `
+            <div class="alert-item">
+                <div class="alert-icon">
+                    <i class="fas ${this.getAlertIcon(alert.severity)}"></i>
+                </div>
+                <div class="alert-content">
+                    <div class="alert-title">${alert.title}</div>
+                    <div class="alert-message">${alert.message}</div>
+                </div>
+                <div class="alert-severity ${alert.severity}">${alert.severity}</div>
+            </div>
+        `).join('');
+    },
+
+    detectBudgetAnomalies(data) {
+        const alerts = [];
+
+        // budget overruns
+        data.departmentData.forEach(dept => {
+            const utilization = (dept.spent / dept.allocated) * 100;
+
+            if (utilization > 90) {
+                alerts.push({
+                    title: 'Budget Overrun Alert',
+                    message: `${dept.name} has utilized ${utilization.toFixed(1)}% of allocated budget (₹${formatCurrency(dept.spent)} of ₹${formatCurrency(dept.allocated)})`,
+                    severity: 'high',
+                    department: dept.name
+                });
+            } else if (utilization > 75) {
+                alerts.push({
+                    title: 'Budget Warning',
+                    message: `${dept.name} has utilized ${utilization.toFixed(1)}% of allocated budget`,
+                    severity: 'medium',
+                    department: dept.name
+                });
+            }
+        });
+
+
+        const totalSpent = data.departmentData.reduce((sum, dept) => sum + dept.spent, 0);
+        const totalAllocated = data.departmentData.reduce((sum, dept) => sum + dept.allocated, 0);
+        const overallUtilization = (totalSpent / totalAllocated) * 100;
+
+        if (overallUtilization > 80) {
+            alerts.push({
+                title: 'High Overall Budget Utilization',
+                message: `Overall budget utilization is at ${overallUtilization.toFixed(1)}%`,
+                severity: 'medium',
+                department: 'All Departments'
+            });
+        }
+
+
+        data.departmentData.forEach(dept => {
+            const utilization = (dept.spent / dept.allocated) * 100;
+            if (utilization < 20 && dept.allocated > 1000000) {
+                alerts.push({
+                    title: 'Low Budget Utilization',
+                    message: `${dept.name} has only utilized ${utilization.toFixed(1)}% of allocated budget`,
+                    severity: 'low',
+                    department: dept.name
+                });
+            }
+        });
+
+        return alerts;
+    },
+
+    getAlertIcon(severity) {
+        const icons = {
+            high: 'fa-exclamation-triangle',
+            medium: 'fa-exclamation-circle',
+            low: 'fa-info-circle'
+        };
+        return icons[severity] || 'fa-info-circle';
     },
 
     getTransactionColor(type) {
@@ -784,9 +903,9 @@ const ui = {
                         <button class="btn btn-primary btn-small" onclick="ui.viewInstitution('${institution._id}')">
                             <i class="fas fa-eye"></i> View
                         </button>
-                        <button class="btn btn-secondary btn-small" onclick="ui.editInstitution('${institution._id}')">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
+                            <button class="btn btn-secondary btn-small" onclick="ui.editInstitution('${institution._id}')">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
                     </div>
                 </div>
             `).join('');
@@ -943,6 +1062,159 @@ const ui = {
         this.loadInstitutions(); // Refresh the institutions list
     },
 
+    viewInstitution(institutionId) {
+        const institution = institutions.find(inst => inst._id === institutionId);
+        if (!institution) {
+            this.showToast('Institution not found', 'error');
+            return;
+        }
+
+        const content = `
+            <div class="institution-details">
+                <div class="detail-section">
+                    <h4>Basic Information</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <label>Name:</label>
+                            <span>${institution.name}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Type:</label>
+                            <span>${institution.type}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Location:</label>
+                            <span>${institution.location || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Established:</label>
+                            <span>${institution.established || 'Not specified'}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h4>Description</h4>
+                    <p>${institution.description || 'No description available'}</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h4>Statistics</h4>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">${institution.departmentCount || 0}</div>
+                            <div class="stat-label">Departments</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${institution.projectCount || 0}</div>
+                            <div class="stat-label">Projects</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${institution.budget || 'N/A'}</div>
+                            <div class="stat-label">Total Budget</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary" onclick="ui.editInstitution('${institution._id}')">
+                        <i class="fas fa-edit"></i> Edit Institution
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="ui.hideModal()">
+                        Close
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('modalTitle').textContent = `Institution Details - ${institution.name}`;
+        document.getElementById('modalBody').innerHTML = content;
+        document.getElementById('modal').classList.add('show');
+    },
+
+    editInstitution(institutionId) {
+        const institution = institutions.find(inst => inst._id === institutionId);
+        if (!institution) {
+            this.showToast('Institution not found', 'error');
+            return;
+        }
+
+        const content = `
+            <div class="institution-form">
+                <h4>Edit Institution</h4>
+                <div class="form-group">
+                    <label for="editInstitutionName">Institution Name</label>
+                    <input type="text" id="editInstitutionName" value="${institution.name}" required>
+                </div>
+                <div class="form-group">
+                    <label for="editInstitutionType">Type</label>
+                    <select id="editInstitutionType" required>
+                        <option value="Ministry" ${institution.type === 'Ministry' ? 'selected' : ''}>Ministry</option>
+                        <option value="Department" ${institution.type === 'Department' ? 'selected' : ''}>Department</option>
+                        <option value="Agency" ${institution.type === 'Agency' ? 'selected' : ''}>Agency</option>
+                        <option value="Board" ${institution.type === 'Board' ? 'selected' : ''}>Board</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editInstitutionLocation">Location</label>
+                    <input type="text" id="editInstitutionLocation" value="${institution.location || ''}">
+                </div>
+                <div class="form-group">
+                    <label for="editInstitutionEstablished">Established Year</label>
+                    <input type="number" id="editInstitutionEstablished" value="${institution.established || ''}" min="1900" max="2024">
+                </div>
+                <div class="form-group">
+                    <label for="editInstitutionDescription">Description</label>
+                    <textarea id="editInstitutionDescription" rows="3">${institution.description || ''}</textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary" onclick="ui.saveInstitutionEdit('${institution._id}')">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="ui.hideModal()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('modalTitle').textContent = `Edit Institution - ${institution.name}`;
+        document.getElementById('modalBody').innerHTML = content;
+        document.getElementById('modal').classList.add('show');
+    },
+
+    saveInstitutionEdit(institutionId) {
+        const name = document.getElementById('editInstitutionName').value;
+        const type = document.getElementById('editInstitutionType').value;
+        const location = document.getElementById('editInstitutionLocation').value;
+        const established = document.getElementById('editInstitutionEstablished').value;
+        const description = document.getElementById('editInstitutionDescription').value;
+
+        if (!name.trim()) {
+            this.showToast('Institution name is required', 'error');
+            return;
+        }
+
+        // Update the institution in the array
+        const institutionIndex = institutions.findIndex(inst => inst._id === institutionId);
+        if (institutionIndex !== -1) {
+            institutions[institutionIndex] = {
+                ...institutions[institutionIndex],
+                name: name.trim(),
+                type: type,
+                location: location.trim(),
+                established: established,
+                description: description.trim()
+            };
+
+            this.showToast('Institution updated successfully!', 'success');
+            this.hideModal();
+            this.loadInstitutions(); // Refresh the institutions list
+        } else {
+            this.showToast('Institution not found', 'error');
+        }
+    },
+
     async loadBudgets() {
         this.showLoading();
 
@@ -966,21 +1238,36 @@ const ui = {
     },
 
     setupBudgetFilters() {
+        const institutions = this.getSampleInstitutions();
+        const departments = ['Education', 'Healthcare', 'Infrastructure', 'Agriculture', 'Technology'];
 
         const institutionFilter = document.getElementById('institutionFilter');
         if (institutionFilter) {
+            // Store current selection
+            const currentInstitution = institutionFilter.value;
+
             institutionFilter.innerHTML = '<option value="">All Institutions</option>' +
                 institutions.map(inst => `<option value="${inst._id}">${inst.name}</option>`).join('');
-        }
 
+            // Restore selection
+            if (currentInstitution) {
+                institutionFilter.value = currentInstitution;
+            }
+        }
 
         const departmentFilter = document.getElementById('departmentFilter');
         if (departmentFilter) {
-            const departments = ['Education', 'Healthcare', 'Infrastructure', 'Agriculture', 'Technology'];
+            // Store current selection
+            const currentDepartment = departmentFilter.value;
+
             departmentFilter.innerHTML = '<option value="">All Departments</option>' +
                 departments.map(dept => `<option value="${dept}">${dept}</option>`).join('');
-        }
 
+            // Restore selection
+            if (currentDepartment) {
+                departmentFilter.value = currentDepartment;
+            }
+        }
 
         if (institutionFilter) {
             institutionFilter.addEventListener('change', () => {
@@ -999,8 +1286,35 @@ const ui = {
         const institutionFilter = document.getElementById('institutionFilter')?.value;
         const departmentFilter = document.getElementById('departmentFilter')?.value;
 
+        console.log('Applying filters:', { institutionFilter, departmentFilter });
 
-        this.loadBudgets();
+        // Get the sample data
+        const data = this.getSampleBudgetData();
+        let filteredData = { ...data };
+
+        // Apply institution filter
+        if (institutionFilter) {
+            const institutions = this.getSampleInstitutions();
+            const selectedInstitution = institutions.find(inst => inst._id === institutionFilter);
+            if (selectedInstitution) {
+                // Filter departments by institution
+                filteredData.departmentBreakdown = data.departmentBreakdown.filter(dept =>
+                    dept.institution === selectedInstitution.name
+                );
+            }
+        }
+
+        // Apply department filter
+        if (departmentFilter) {
+            filteredData.departmentBreakdown = filteredData.departmentBreakdown.filter(dept =>
+                dept.name === departmentFilter
+            );
+        }
+
+        // Update the display with filtered data
+        this.displayBudgetSummary(filteredData);
+        this.updateBudgetTable(filteredData.departmentBreakdown);
+        this.loadBudgetCharts(filteredData);
     },
 
     getSampleBudgetData() {
@@ -1012,11 +1326,11 @@ const ui = {
                 utilization: 64
             },
             departmentBreakdown: [
-                { id: '1', name: 'Education', allocated: 15000000, spent: 9500000, remaining: 5500000, utilization: 63.3 },
-                { id: '2', name: 'Healthcare', allocated: 12000000, spent: 7800000, remaining: 4200000, utilization: 65.0 },
-                { id: '3', name: 'Infrastructure', allocated: 10000000, spent: 6500000, remaining: 3500000, utilization: 65.0 },
-                { id: '4', name: 'Agriculture', allocated: 8000000, spent: 5200000, remaining: 2800000, utilization: 65.0 },
-                { id: '5', name: 'Technology', allocated: 5000000, spent: 3000000, remaining: 2000000, utilization: 60.0 }
+                { id: '1', name: 'Education', institution: 'Ministry of Education', allocated: 15000000, spent: 9500000, remaining: 5500000, utilization: 63.3 },
+                { id: '2', name: 'Healthcare', institution: 'Ministry of Health', allocated: 12000000, spent: 7800000, remaining: 4200000, utilization: 65.0 },
+                { id: '3', name: 'Infrastructure', institution: 'Ministry of Infrastructure', allocated: 10000000, spent: 6500000, remaining: 3500000, utilization: 65.0 },
+                { id: '4', name: 'Agriculture', institution: 'Ministry of Agriculture', allocated: 8000000, spent: 5200000, remaining: 2800000, utilization: 65.0 },
+                { id: '5', name: 'Technology', institution: 'Ministry of Technology', allocated: 5000000, spent: 3000000, remaining: 2000000, utilization: 60.0 }
             ],
             categoryBreakdown: [
                 { _id: 'Personnel', totalAmount: 15000000 },
@@ -1058,8 +1372,23 @@ const ui = {
     },
 
     loadBudgetCharts(data) {
+        console.log('Loading budget charts with data:', data);
 
-        const deptCtx = document.getElementById('departmentBudgetChart').getContext('2d');
+        // Check if Chart.js is loaded
+        if (typeof Chart === 'undefined') {
+            console.error('Chart.js not loaded, retrying...');
+            setTimeout(() => this.loadBudgetCharts(data), 100);
+            return;
+        }
+
+        // Department Budget Chart
+        const deptCanvas = document.getElementById('departmentBudgetChart');
+        if (!deptCanvas) {
+            console.error('Department budget chart canvas not found');
+            return;
+        }
+
+        const deptCtx = deptCanvas.getContext('2d');
         if (charts.departmentBudget) charts.departmentBudget.destroy();
 
         charts.departmentBudget = new Chart(deptCtx, {
@@ -1095,7 +1424,14 @@ const ui = {
             }
         });
 
-        const catCtx = document.getElementById('categoryChart').getContext('2d');
+        // Category Chart
+        const catCanvas = document.getElementById('categoryChart');
+        if (!catCanvas) {
+            console.error('Category chart canvas not found');
+            return;
+        }
+
+        const catCtx = catCanvas.getContext('2d');
         if (charts.category) charts.category.destroy();
 
         charts.category = new Chart(catCtx, {
@@ -1120,6 +1456,8 @@ const ui = {
                 }
             }
         });
+
+        console.log('Budget charts initialized successfully!');
     },
 
     updateBudgetTable(departments) {
@@ -1139,6 +1477,14 @@ const ui = {
                 <td>
                     <button class="btn btn-primary btn-small" onclick="ui.viewDepartmentBudget('${dept.id}')">
                         <i class="fas fa-eye"></i> View
+                    </button>
+                    <button class="btn btn-info btn-small" onclick="ui.viewFeedbackDetails('${dept.name}', '${dept.id}')" style="margin-left: 5px;">
+                        <i class="fas fa-comments"></i> View Feedback
+                    </button>
+                </td>
+                <td>
+                    <button class="feedback-button" onclick="ui.showFeedbackModal('${dept.name}', '${dept.id}')">
+                        <i class="fas fa-comment"></i> Add Feedback
                     </button>
                 </td>
             </tr>
@@ -1161,6 +1507,127 @@ const ui = {
                 <td>${spending.approvedBy}</td>
             </tr>
         `).join('');
+    },
+
+    showFeedbackModal(departmentName, departmentId) {
+        const content = `
+            <div class="feedback-form">
+                <h4>Feedback for ${departmentName}</h4>
+                <div class="form-group">
+                    <label for="feedbackText">Your Feedback/Suggestion</label>
+                    <textarea id="feedbackText" rows="4" placeholder="Share your thoughts, suggestions, or concerns about this department's budget..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="feedbackAuthor">Your Name (Optional)</label>
+                    <input type="text" id="feedbackAuthor" placeholder="Enter your name">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="ui.hideFeedbackModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="ui.submitFeedback('${departmentId}', '${departmentName}')">Submit Feedback</button>
+                </div>
+            </div>
+            <div class="mt-3">
+                <h5>Previous Feedback</h5>
+                <div id="previousFeedback">
+                    ${this.getPreviousFeedback(departmentId)}
+                </div>
+            </div>
+        `;
+
+        document.getElementById('feedbackModalTitle').textContent = `Feedback for ${departmentName}`;
+        document.getElementById('feedbackModalBody').innerHTML = content;
+        document.getElementById('feedbackModal').classList.add('show');
+    },
+
+    hideFeedbackModal() {
+        document.getElementById('feedbackModal').classList.remove('show');
+    },
+
+    submitFeedback(departmentId, departmentName) {
+        const feedbackText = document.getElementById('feedbackText').value;
+        const feedbackAuthor = document.getElementById('feedbackAuthor').value || 'Anonymous';
+
+        if (!feedbackText.trim()) {
+            this.showToast('Please enter your feedback', 'error');
+            return;
+        }
+
+        // Store feedback in localStorage (in a real app, this would go to a database)
+        const feedback = {
+            id: Date.now().toString(),
+            departmentId,
+            departmentName,
+            text: feedbackText,
+            author: feedbackAuthor,
+            date: new Date().toISOString()
+        };
+
+        let feedbacks = JSON.parse(localStorage.getItem('budgetFeedbacks') || '[]');
+        feedbacks.push(feedback);
+        localStorage.setItem('budgetFeedbacks', JSON.stringify(feedbacks));
+
+        this.showToast('Feedback submitted successfully!', 'success');
+        this.hideFeedbackModal();
+
+        // Refresh the feedback display
+        this.showFeedbackModal(departmentName, departmentId);
+    },
+
+    getPreviousFeedback(departmentId) {
+        const feedbacks = JSON.parse(localStorage.getItem('budgetFeedbacks') || '[]');
+        const departmentFeedbacks = feedbacks.filter(f => f.departmentId === departmentId);
+
+        if (departmentFeedbacks.length === 0) {
+            return '<p class="text-muted">No previous feedback for this department.</p>';
+        }
+
+        return departmentFeedbacks.map(feedback => `
+            <div class="feedback-item">
+                <div class="feedback-author">${feedback.author}</div>
+                <div class="feedback-date">${formatDateTime(feedback.date)}</div>
+                <div class="feedback-text">${feedback.text}</div>
+            </div>
+        `).join('');
+    },
+
+    viewFeedbackDetails(departmentName, departmentId) {
+        const feedbacks = JSON.parse(localStorage.getItem('budgetFeedbacks') || '[]');
+        const departmentFeedbacks = feedbacks.filter(f => f.departmentId === departmentId);
+
+        const content = `
+            <div class="feedback-details">
+                <h4>All Feedback for ${departmentName}</h4>
+                <div class="feedback-stats">
+                    <p><strong>Total Feedback:</strong> ${departmentFeedbacks.length} comments</p>
+                </div>
+                <div class="feedback-list">
+                    ${departmentFeedbacks.length === 0 ?
+                '<p class="text-muted">No feedback submitted yet for this department.</p>' :
+                departmentFeedbacks.map(feedback => `
+                            <div class="feedback-item">
+                                <div class="feedback-header">
+                                    <span class="feedback-author">${feedback.author}</span>
+                                    <span class="feedback-date">${formatDateTime(feedback.date)}</span>
+                                </div>
+                                <div class="feedback-text">${feedback.text}</div>
+                            </div>
+                        `).join('')
+            }
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary" onclick="ui.showFeedbackModal('${departmentName}', '${departmentId}')">
+                        <i class="fas fa-plus"></i> Add New Feedback
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="ui.hideModal()">
+                        Close
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('modalTitle').textContent = `Feedback Details - ${departmentName}`;
+        document.getElementById('modalBody').innerHTML = content;
+        document.getElementById('modal').classList.add('show');
     },
 
     async loadTransactions() {
@@ -1569,6 +2036,193 @@ const ui = {
         this.loadProjects();
     },
 
+    viewProject(projectId) {
+        const project = projects.find(proj => proj._id === projectId);
+        if (!project) {
+            this.showToast('Project not found', 'error');
+            return;
+        }
+
+        const progressPercentage = Math.round((project.budget.spent / project.budget.allocated) * 100);
+        const daysRemaining = this.calculateDaysRemaining(project.endDate);
+
+        const content = `
+            <div class="project-details">
+                <div class="detail-section">
+                    <h4>Project Information</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <label>Project Name:</label>
+                            <span>${project.name}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Department:</label>
+                            <span>${project.department}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Status:</label>
+                            <span class="status-badge status-${project.status}">${project.status}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Start Date:</label>
+                            <span>${formatDate(project.startDate)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>End Date:</label>
+                            <span>${formatDate(project.endDate)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Days Remaining:</label>
+                            <span>${daysRemaining} days</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h4>Description</h4>
+                    <p>${project.description || 'No description available'}</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h4>Budget Information</h4>
+                    <div class="budget-grid">
+                        <div class="budget-item">
+                            <label>Total Budget:</label>
+                            <span>${formatCurrency(project.budget.allocated)}</span>
+                        </div>
+                        <div class="budget-item">
+                            <label>Amount Spent:</label>
+                            <span>${formatCurrency(project.budget.spent)}</span>
+                        </div>
+                        <div class="budget-item">
+                            <label>Remaining:</label>
+                            <span>${formatCurrency(project.budget.remaining)}</span>
+                        </div>
+                        <div class="budget-item">
+                            <label>Utilization:</label>
+                            <span>${progressPercentage}%</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: ${progressPercentage}%"></div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary" onclick="ui.viewProjectProgress('${project._id}')">
+                        <i class="fas fa-chart-line"></i> View Progress
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="ui.hideModal()">
+                        Close
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('modalTitle').textContent = `Project Details - ${project.name}`;
+        document.getElementById('modalBody').innerHTML = content;
+        document.getElementById('modal').classList.add('show');
+    },
+
+    viewProjectProgress(projectId) {
+        const project = projects.find(proj => proj._id === projectId);
+        if (!project) {
+            this.showToast('Project not found', 'error');
+            return;
+        }
+
+        const progressPercentage = Math.round((project.budget.spent / project.budget.allocated) * 100);
+        const daysRemaining = this.calculateDaysRemaining(project.endDate);
+        const totalDays = this.calculateDaysBetween(project.startDate, project.endDate);
+        const daysElapsed = totalDays - daysRemaining;
+        const timeProgress = Math.round((daysElapsed / totalDays) * 100);
+
+        const content = `
+            <div class="project-progress">
+                <div class="progress-section">
+                    <h4>Budget Progress</h4>
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span>Budget Utilization</span>
+                            <span>${progressPercentage}%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: ${progressPercentage}%"></div>
+                        </div>
+                        <div class="progress-details">
+                            <span>${formatCurrency(project.budget.spent)} of ${formatCurrency(project.budget.allocated)}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <h4>Timeline Progress</h4>
+                    <div class="progress-item">
+                        <div class="progress-header">
+                            <span>Time Elapsed</span>
+                            <span>${timeProgress}%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: ${timeProgress}%"></div>
+                        </div>
+                        <div class="progress-details">
+                            <span>${daysElapsed} of ${totalDays} days</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <h4>Project Status</h4>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <label>Current Status:</label>
+                            <span class="status-badge status-${project.status}">${project.status}</span>
+                        </div>
+                        <div class="status-item">
+                            <label>Days Remaining:</label>
+                            <span>${daysRemaining} days</span>
+                        </div>
+                        <div class="status-item">
+                            <label>Budget Status:</label>
+                            <span class="${progressPercentage > 90 ? 'text-danger' : progressPercentage > 75 ? 'text-warning' : 'text-success'}">
+                                ${progressPercentage > 90 ? 'Over Budget Risk' : progressPercentage > 75 ? 'High Usage' : 'On Track'}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary" onclick="ui.viewProject('${project._id}')">
+                        <i class="fas fa-eye"></i> View Project Details
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="ui.hideModal()">
+                        Close
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('modalTitle').textContent = `Project Progress - ${project.name}`;
+        document.getElementById('modalBody').innerHTML = content;
+        document.getElementById('modal').classList.add('show');
+    },
+
+    calculateDaysRemaining(endDate) {
+        const end = new Date(endDate);
+        const now = new Date();
+        const diffTime = end - now;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays > 0 ? diffDays : 0;
+    },
+
+    calculateDaysBetween(startDate, endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const diffTime = end - start;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+    },
+
 
     async viewInstitution(id) {
         try {
@@ -1778,10 +2432,21 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.hideModal();
     });
 
-
     document.getElementById('modal').addEventListener('click', (e) => {
         if (e.target.id === 'modal') {
             ui.hideModal();
+        }
+    });
+
+    // Feedback modal close
+    document.getElementById('feedbackModalClose').addEventListener('click', () => {
+        ui.hideFeedbackModal();
+    });
+
+    // Close feedback modal on outside click
+    document.getElementById('feedbackModal').addEventListener('click', (e) => {
+        if (e.target.id === 'feedbackModal') {
+            ui.hideFeedbackModal();
         }
     });
 
