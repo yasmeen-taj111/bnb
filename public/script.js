@@ -48,8 +48,68 @@ function viewDetails(department) {
 }
 
 
+const spendingData = [
+    {
+        department: "Health",
+        category: "Medical Supplies",
+        transactionId: "TXN1001",
+        description: "Purchase of medicines for govt hospitals",
+        amount: "₹2,50,000",
+        date: "2025-09-01",
+        status: "Approved",
+        approvedBy: "Dr. A. Sharma"
+    },
+    {
+        department: "Education",
+        category: "Infrastructure",
+        transactionId: "TXN1002",
+        description: "Smart classroom equipment",
+        amount: "₹5,00,000",
+        date: "2025-09-03",
+        status: "Pending",
+        approvedBy: "-"
+    },
+    {
+        department: "Transport",
+        category: "Road Maintenance",
+        transactionId: "TXN1003",
+        description: "Repair of NH-44 section",
+        amount: "₹10,00,000",
+        date: "2025-09-05",
+        status: "Approved",
+        approvedBy: "Mr. R. Kumar"
+    },
+    {
+        department: "Water Supply",
+        category: "Pipeline Upgrade",
+        transactionId: "TXN1004",
+        description: "New water pipelines in rural areas",
+        amount: "₹3,75,000",
+        date: "2025-09-08",
+        status: "Rejected",
+        approvedBy: "-"
+    }
+];
 
 
+const tableBody = document.getElementById("detailedSpendingTableBody");
+
+spendingData.forEach(item => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td>${item.department}</td>
+        <td>${item.category}</td>
+        <td>${item.transactionId}</td>
+        <td>${item.description}</td>
+        <td>${item.amount}</td>
+        <td>${item.date}</td>
+        <td>${item.status}</td>
+        <td>${item.approvedBy}</td>
+    `;
+
+    tableBody.appendChild(row);
+});
 
 
 
