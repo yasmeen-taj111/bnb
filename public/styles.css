@@ -218,12 +218,15 @@ footer {
   gap: 0.5rem;
   font-size: 0.9rem;
   font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .chatbot-btn:hover {
   background: linear-gradient(45deg, #ff5252, #ff7979);
+  color: white;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .chatbot-btn i {
@@ -1261,7 +1264,7 @@ footer {
   .nav-brand i {
     font-size: 1.5rem;
   }
-  
+
   .nav-menu {
     display: none;
     position: absolute;
@@ -1282,7 +1285,7 @@ footer {
   .nav-toggle {
     display: block;
   }
-  
+
   .nav-link {
     padding: 0.4rem 0.6rem;
     font-size: 0.85rem;
@@ -2022,16 +2025,21 @@ code {
   .theme-btn span {
     display: none;
   }
-  
+
   .nav-user {
     gap: 0.25rem;
   }
-  
+
   .theme-btn,
   .currency-btn,
   .chatbot-btn {
     padding: 0.4rem 0.6rem;
     font-size: 0.8rem;
+  }
+
+  .chatbot-btn {
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
 
   .chatbot-modal .modal-content {
@@ -2776,16 +2784,30 @@ code {
   background: rgba(255, 255, 255, 0.2);
 }
 
-[data-theme="dark"] .currency-btn,
-[data-theme="dark"] .chatbot-btn {
+[data-theme="dark"] .currency-btn {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.2);
   color: white;
 }
 
-[data-theme="dark"] .currency-btn:hover,
-[data-theme="dark"] .chatbot-btn:hover {
+[data-theme="dark"] .currency-btn:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .chatbot-btn {
+  background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+  color: white !important;
+  border: none;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .chatbot-btn:hover {
+  background: linear-gradient(45deg, #ff5252, #ff7979);
+  color: white !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 /* Dark mode specific chart colors */
@@ -2803,14 +2825,50 @@ code {
   background: var(--bg-tertiary);
 }
 
-[data-theme="dark"] .bot-message {
+[data-theme="dark"] .bot-message .message-content {
   background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .user-message .message-content {
+  background: var(--accent);
+  color: white;
+}
+
+[data-theme="dark"] .message-text h1,
+[data-theme="dark"] .message-text h2,
+[data-theme="dark"] .message-text h3 {
   color: var(--text-primary);
 }
 
-[data-theme="dark"] .user-message {
-  background: var(--accent);
-  color: white;
+[data-theme="dark"] .message-text h1 {
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .message-text strong {
+  color: #ffd700;
+}
+
+[data-theme="dark"] .message-text code {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .message-text blockquote {
+  border-left-color: #ffd700;
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .message-text th,
+[data-theme="dark"] .message-text td {
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .message-text th {
+  background: var(--bg-tertiary);
 }
 
 [data-theme="dark"] .chatbot-input-container input {
@@ -2828,9 +2886,89 @@ code {
   color: white;
 }
 
-[data-theme="dark"]   .chatbot-input-container button:hover {
-    background: var(--accent-hover);
-  }
+[data-theme="dark"] .chatbot-input-container button:hover {
+  background: var(--accent-hover);
+}
+
+[data-theme="dark"] .feedback-button {
+  background: var(--info);
+  color: white;
+}
+
+[data-theme="dark"] .feedback-button:hover {
+  background: #0c5460;
+}
+
+[data-theme="dark"] .feedback-item {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .feedback-author {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .feedback-date {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .feedback-text {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .feedback-details {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .feedback-stats {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .feedback-list {
+  border-color: var(--border-color);
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .view-feedback-btn {
+  background: var(--info);
+  color: white;
+  border: 1px solid var(--info);
+}
+
+[data-theme="dark"] .view-feedback-btn:hover {
+  background: #0c5460;
+  border-color: #0c5460;
+}
+
+[data-theme="dark"] .submit-feedback-btn {
+  background: var(--accent);
+  color: white;
+  border: 1px solid var(--accent);
+}
+
+[data-theme="dark"] .submit-feedback-btn:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+[data-theme="dark"] .message-content {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .message-content p {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .message-content i {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .user-message .message-content i {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 footer {
@@ -2869,7 +3007,7 @@ footer {
 }
 
 .footer-section h4::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 30px;
   height: 2px;
@@ -2910,7 +3048,7 @@ footer {
 }
 
 .footer-section ul li a::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 0;
   height: 2px;
@@ -3000,36 +3138,36 @@ footer {
     padding: 2rem 0 1rem;
     margin-top: 1rem;
   }
-  
+
   .footer-content {
     grid-template-columns: 1fr;
     gap: 1.5rem;
     padding: 0 1rem;
     text-align: center;
   }
-  
+
   .footer-section {
     align-items: center;
     text-align: center;
   }
-  
+
   .footer-section h4::after {
     left: 50%;
     transform: translateX(-50%);
   }
-  
+
   .footer-section h4 {
     font-size: 1.1rem;
   }
-  
+
   .social-links {
     justify-content: center;
   }
-  
+
   .footer-bottom {
     padding: 1rem;
   }
-  
+
   .footer-section ul li a:hover {
     transform: none;
   }
