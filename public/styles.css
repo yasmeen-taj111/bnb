@@ -1131,3 +1131,27 @@ code {
 .gap-3 {
   gap: 1.5rem;
 }
+
+.transaction-item {
+  background: #f9f9f9;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.transaction-item p {
+  margin: 2px 0;
+  font-size: 14px;
+}
+.status.approved {
+  color: green;
+  font-weight: bold;
+}
+.status.pending {
+  color: orange;
+  font-weight: bold;
+}
+.status.rejected {
+  color: red;
+  font-weight: bold;
+}
