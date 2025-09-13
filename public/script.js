@@ -3269,7 +3269,14 @@ document.addEventListener('DOMContentLoaded', () => {
             ui.hideChatbot();
         }
 
-        // Chatbot send button
+
+        if (e.target.closest('footer a[data-page]')) {
+            e.preventDefault();
+            const page = e.target.closest('a[data-page]').dataset.page;
+            console.log('Footer navigation clicked:', page);
+            ui.showPage(page);
+        }
+
         if (e.target.closest('#chatbotSendBtn')) {
             console.log('Chatbot send button clicked');
             const input = document.getElementById('chatbotInput');
