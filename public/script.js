@@ -796,7 +796,7 @@ const ui = {
             if (utilization > 90) {
                 alerts.push({
                     title: 'Budget Overrun Alert',
-                    message: `${dept.name} has utilized ${utilization.toFixed(1)}% of allocated budget (₹${formatCurrency(dept.spent)} of ₹${formatCurrency(dept.allocated)})`,
+                    message: `${dept.name} has utilized ${utilization.toFixed(1)}% of allocated budget (${formatCurrency(dept.spent)} of ${formatCurrency(dept.allocated)})`,
                     severity: 'high',
                     department: dept.name
                 });
