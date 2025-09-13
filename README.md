@@ -123,11 +123,11 @@ financial-transparency-platform/
 
 ├── backend/
 
-│   ├── middleware/       # JWT auth middleware
+│      ├── middleware/          # JWT auth middleware
 
-│   ├── models/           # MongoDB models
+│      ├── models/              # MongoDB models
 
-│   └── routes/           # API routes
+│      └── routes/              # API routes
 
 ├── public/               # Frontend files (HTML, CSS, JS)
 
