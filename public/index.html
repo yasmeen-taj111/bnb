@@ -141,6 +141,9 @@
             <div class="page-header">
                 <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
                 <p>Financial overview and key metrics</p>
+                <button class="test-button" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+                    Test Button (Click to verify event delegation works)
+                </button>
             </div>
 
             <div class="dashboard-grid">
@@ -488,6 +491,36 @@
             </div>
             <div class="modal-body" id="feedbackModalBody">
                 <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+   
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="projectModalTitle">Project Details</h3>
+                <button class="modal-close" id="projectModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="projectModalBody">
+                <!-- Project details -->
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="modal" id="transactionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="transactionModalTitle">Transaction Details</h3>
+                <button class="modal-close" id="transactionModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="transactionModalBody">
+                <!-- Transaction details -->
             </div>
         </div>
     </div>
