@@ -17,6 +17,55 @@ const formatCurrency = (amount) => {
     }).format(amount);
 };
 
+
+
+const transaction = [
+    {
+        id: "TXN12345",
+        department: "Education",
+        description: "Purchase of lab equipment",
+        amount: 120000,
+        date: "2025-09-10",
+        status: "Approved"
+    },
+    {
+        id: "TXN12346",
+        department: "Health",
+        description: "Hospital supplies",
+        amount: 85000,
+        date: "2025-09-09",
+        status: "Pending"
+    },
+    {
+        id: "TXN12347",
+        department: "Transport",
+        description: "Road maintenance",
+        amount: 250000,
+        date: "2025-09-08",
+        status: "Rejected"
+    }
+];
+
+
+const recentTransactionsContainer = document.getElementById("recentTransactions");
+
+
+transaction.forEach(txn => {
+    const txnDiv = document.createElement("div");
+    txnDiv.classList.add("transaction-item");
+
+    txnDiv.innerHTML = `
+        <p><strong>${txn.department}</strong> - ${txn.description}</p>
+        <p>ID: ${txn.id}</p>
+        <p>Amount: ₹${txn.amount.toLocaleString()}</p>
+        <p>Date: ${txn.date}</p>
+        <p>Status: <span class="status ${txn.status.toLowerCase()}">${txn.status}</span></p>
+    `;
+
+    recentTransactionsContainer.appendChild(txnDiv);
+});
+
+
 const budgetData = [
     { department: "Education", allocated: "₹1.5 Cr", spent: "₹95 L", remaining: "₹55 L", utilization: "63%" },
     { department: "Healthcare", allocated: "₹1.2 Cr", spent: "₹78 L", remaining: "₹42 L", utilization: "65%" },
