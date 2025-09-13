@@ -900,12 +900,12 @@ const ui = {
                         </div>
                     </div>
                     <div class="card-actions">
-                        <button class="btn btn-primary btn-small" onclick="viewInstitution('${institution._id}')">
+                        <button class="btn btn-primary btn-small view-institution-btn" data-institution-id="${institution._id}">
                             <i class="fas fa-eye"></i> View
                         </button>
-                            <button class="btn btn-secondary btn-small" onclick="editInstitution('${institution._id}')">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
+                        <button class="btn btn-secondary btn-small edit-institution-btn" data-institution-id="${institution._id}">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
                     </div>
                 </div>
             `).join('');
@@ -1117,10 +1117,10 @@ const ui = {
                 </div>
                 
                 <div class="form-actions">
-                    <button type="button" class="btn btn-primary" onclick="editInstitution('${institution._id}')">
+                    <button type="button" class="btn btn-primary edit-institution-btn" data-institution-id="${institution._id}">
                         <i class="fas fa-edit"></i> Edit Institution
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="hideModal()">
+                    <button type="button" class="btn btn-secondary">
                         Close
                     </button>
                 </div>
@@ -1168,10 +1168,10 @@ const ui = {
                     <textarea id="editInstitutionDescription" rows="3">${institution.description || ''}</textarea>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-primary" onclick="saveInstitutionEdit('${institution._id}')">
+                    <button type="button" class="btn btn-primary save-institution-btn" data-institution-id="${institution._id}">
                         <i class="fas fa-save"></i> Save Changes
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="hideModal()">
+                    <button type="button" class="btn btn-secondary">
                         Cancel
                     </button>
                 </div>
@@ -2232,27 +2232,75 @@ const ui = {
     },
 
 
-    async viewInstitution(id) {
+    viewInstitution(id) {
         try {
-            const response = await api.getInstitution(id);
-            const institution = response.institution;
+            const institution = institutions.find(inst => inst._id === id);
+            if (!institution) {
+                this.showToast('Institution not found', 'error');
+                return;
+            }
 
             const content = `
                 <div class="institution-details">
-                    <h3>${institution.name}</h3>
-                    <p><strong>Type:</strong> ${institution.type}</p>
-                    <p><strong>Description:</strong> ${institution.description || 'No description'}</p>
-                    <p><strong>Contact:</strong> ${institution.contact?.email || 'N/A'}</p>
-                    <div class="mt-3">
-                        <h4>Financial Summary</h4>
-                        <p>Total Budget: ${formatCurrency(response.summary.totalBudget)}</p>
-                        <p>Total Spent: ${formatCurrency(response.summary.totalSpent)}</p>
-                        <p>Remaining: ${formatCurrency(response.summary.totalRemaining)}</p>
+                    <div class="detail-section">
+                        <h4>Institution Information</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>Name:</label>
+                                <span>${institution.name}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Type:</label>
+                                <span>${institution.type}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Location:</label>
+                                <span>${institution.location}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Established:</label>
+                                <span>${institution.established || 'N/A'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h4>Description</h4>
+                        <p>${institution.description || 'No description available'}</p>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h4>Statistics</h4>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <span class="stat-value">${institution.departmentCount || 0}</span>
+                                <span class="stat-label">Departments</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value">${institution.projectCount || 0}</span>
+                                <span class="stat-label">Projects</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value">${institution.budget || formatCurrency(0)}</span>
+                                <span class="stat-label">Total Budget</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-primary edit-institution-btn" data-institution-id="${institution._id}">
+                            <i class="fas fa-edit"></i> Edit Institution
+                        </button>
+                        <button type="button" class="btn btn-secondary">
+                            Close
+                        </button>
                     </div>
                 </div>
             `;
 
-            this.showModal('Institution Details', content);
+            document.getElementById('modalTitle').textContent = `Institution Details - ${institution.name}`;
+            document.getElementById('modalBody').innerHTML = content;
+            document.getElementById('modal').classList.add('show');
         } catch (error) {
             this.showToast(error.message, 'error');
         }
@@ -2644,11 +2692,29 @@ document.addEventListener('DOMContentLoaded', () => {
             ui.rejectTransaction(transactionId);
         }
 
-        // Test button
-        // if (e.target.closest('.test-button')) {
-        //     alert('Button click works!');
-        //     console.log('Test button clicked successfully');
-        // }
+
+        if (e.target.closest('.view-institution-btn')) {
+            const button = e.target.closest('.view-institution-btn');
+            const institutionId = button.dataset.institutionId;
+            console.log('View institution button clicked:', institutionId);
+            ui.viewInstitution(institutionId);
+        }
+
+
+        if (e.target.closest('.edit-institution-btn')) {
+            const button = e.target.closest('.edit-institution-btn');
+            const institutionId = button.dataset.institutionId;
+            console.log('Edit institution button clicked:', institutionId);
+            ui.editInstitution(institutionId);
+        }
+
+
+        if (e.target.closest('.save-institution-btn')) {
+            const button = e.target.closest('.save-institution-btn');
+            const institutionId = button.dataset.institutionId;
+            console.log('Save institution button clicked:', institutionId);
+            ui.saveInstitutionEdit(institutionId);
+        }
 
 
         if (e.target.closest('.modal-close') || e.target.closest('.btn-secondary')) {
