@@ -63,53 +63,53 @@ git clone https://github.com/yasmeen-taj111/bnb.git
 
 2. **Install dependencies**
 
-npm install
+  npm install
 
-Or using yarn:
-yarn install
+  Or using yarn:
+  yarn install
 
 3. **Set up environment variables**
-cp .env.example .env
+  cp .env.example .env
 
 
-Edit the `.env` file with your configuration:
+  Edit the `.env` file with your configuration:
 
 
-PORT=3002
+  PORT=3002
 
-MONGODB_URI=mongodb://localhost:27017/fundradar
+  MONGODB_URI=mongodb://localhost:27017/fundradar
 
-JWT_SECRET=your-super-secret-jwt-key
+  JWT_SECRET=your-super-secret-jwt-key
 
-OPENAI_API_KEY=your-openai-api-key
+  OPENAI_API_KEY=your-openai-api-key
 
-AI_MODEL=gpt-3.5-turbo
+  AI_MODEL=gpt-3.5-turbo
 
-AI_MAX_TOKENS=1000
+  AI_MAX_TOKENS=1000
 
-AI_TEMPERATURE=0.7
+  AI_TEMPERATURE=0.7
 
-AI_USE_MOCK_RESPONSES=false
+  AI_USE_MOCK_RESPONSES=false
 
 4. **Start MongoDB service**
-Ubuntu/Debian:
-sudo systemctl start mongodb
+  Ubuntu/Debian:
+  sudo systemctl start mongodb
 
-macOS:
-brew services start mongodb
+  macOS:
+  brew services start mongodb
 
-Windows:
-Start MongoDB service from Services or run `mongod`
+  Windows:
+  Start MongoDB service from Services or run `mongod`
 
 5. **Create the database**
-mongo:
-use fundradar
+  mongo:
+  use fundradar
 
 6. **Start the application**
-npm start
+  npm start
 
-Or using yarn:
-yarn start
+  Or using yarn:
+  yarn start
 
 7. **Access the application**
 Open your browser and navigate to http://localhost:3002
@@ -118,13 +118,21 @@ Open your browser and navigate to http://localhost:3002
 
 ### 📁 Project Structure
 financial-transparency-platform/
+
 ├── backend/
+
 │   ├── middleware/       # JWT auth middleware
+
 │   ├── models/           # MongoDB models
+
 │   └── routes/           # API routes
+
 ├── public/               # Frontend files (HTML, CSS, JS)
+
 ├── server.js             # Express server
+
 ├── package.json          # Dependencies & scripts
+
 └── README.md
 
 ---
