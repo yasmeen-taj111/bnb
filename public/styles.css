@@ -1219,6 +1219,10 @@ footer {
 }
 
 @media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
   .nav-menu {
     display: none;
     position: absolute;
