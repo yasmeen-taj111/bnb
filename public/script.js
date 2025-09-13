@@ -6,9 +6,10 @@ let projects = [];
 let transactions = [];
 let charts = {};
 
-// Currency and Chatbot globals
+// Currency, Theme and Chatbot globals
 let currentCurrency = 'INR';
 let exchangeRate = 83.0; // INR to USD rate (will be updated)
+let currentTheme = 'light';
 let chatbotHistory = [];
 
 const API_BASE_URL = '/api';
@@ -2500,6 +2501,37 @@ const ui = {
         }
     },
 
+    initializeTheme() {
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        this.setTheme(savedTheme);
+    },
+
+    setTheme(theme) {
+        currentTheme = theme;
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
+
+        if (themeIcon && themeText) {
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+                themeText.textContent = 'Dark';
+            }
+        }
+    },
+
+    toggleTheme() {
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        this.setTheme(newTheme);
+        this.showToast(`Theme switched to ${newTheme} mode`, 'success');
+    },
+
     updateDashboardCurrency() {
 
         const summaryCards = document.querySelectorAll('.summary-card .card-content h3');
@@ -2992,6 +3024,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check authentication on page load
     auth.checkAuth();
 
+    // Initialize theme
+    ui.initializeTheme();
+
 
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
@@ -3210,6 +3245,12 @@ document.addEventListener('DOMContentLoaded', () => {
             ui.submitFeedback(departmentId, departmentName);
         }
 
+
+        if (e.target.closest('#themeToggle')) {
+            console.log('Theme toggle clicked');
+            ui.toggleTheme();
+        }
+
         // Currency toggle
         if (e.target.closest('#currencyToggle')) {
             console.log('Currency toggle clicked');
@@ -3358,7 +3399,7 @@ function testFeatures() {
         console.error('Chatbot UI not available');
     }
 
-    // Test currency toggle
+
     console.log('Testing currency toggle...');
     if (typeof ui !== 'undefined' && ui.toggleCurrency) {
         console.log('Currency toggle UI available');
