@@ -145,6 +145,30 @@ footer {
   cursor: pointer;
 }
 
+/* Theme Toggle Styles */
+.theme-toggle {
+  margin-right: 1rem;
+}
+
+.theme-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.theme-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
 /* Currency Toggle Styles */
 .currency-toggle {
   margin-right: 1rem;
@@ -2454,4 +2478,340 @@ code {
     min-height: 48px;
     min-width: 48px;
   }
+}
+
+[data-theme="dark"] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #3a3a3a;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --text-muted: #808080;
+  --border-color: #404040;
+  --shadow: rgba(0, 0, 0, 0.3);
+  --accent: #667eea;
+  --accent-hover: #5a6fd8;
+  --success: #28a745;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --info: #17a2b8;
+}
+
+[data-theme="dark"] body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .navbar {
+  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+  box-shadow: 0 2px 10px var(--shadow);
+}
+
+[data-theme="dark"] .card {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  box-shadow: 0 4px 15px var(--shadow);
+}
+
+[data-theme="dark"] .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px var(--shadow);
+}
+
+[data-theme="dark"] .summary-cards .card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .card-content h3 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .card-content p {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .chart-card {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .chart-card h3 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .activity-card {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .activity-card h3 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .activity-item {
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .activity-title {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .activity-meta {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .institution-card,
+[data-theme="dark"] .project-card {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .card-title {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .card-description {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .stat-value {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .stat-label {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .budget-card {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .budget-card h3 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .budget-details {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .budget-details h3 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .data-table {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .data-table th {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .data-table td {
+  border-bottom-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .data-table tr:hover {
+  background: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .filters-container {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .filter-group label {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .filter-group select,
+[data-theme="dark"] .filter-group input {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .filter-group select:focus,
+[data-theme="dark"] .filter-group input:focus {
+  border-color: var(--accent);
+}
+
+[data-theme="dark"] .pagination button {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .pagination button:hover:not(:disabled) {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+[data-theme="dark"] .modal-content {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .modal-header {
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .modal-header h3 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .modal-close {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .modal-close:hover {
+  background: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .form-group label {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .form-group input:focus,
+[data-theme="dark"] .form-group select:focus {
+  border-color: var(--accent);
+}
+
+[data-theme="dark"] .login-card,
+[data-theme="dark"] .register-card {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .login-header h1 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .login-header p {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .toast {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  box-shadow: 0 4px 20px var(--shadow);
+}
+
+[data-theme="dark"] .toast-title {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .toast-message {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .page-header h1 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .page-header {
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .nav-link {
+  color: white;
+}
+
+[data-theme="dark"] .nav-link:hover,
+[data-theme="dark"] .nav-link.active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .user-dropdown {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  box-shadow: 0 4px 20px var(--shadow);
+}
+
+[data-theme="dark"] .user-dropdown a {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .user-dropdown a:hover {
+  background: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .theme-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+[data-theme="dark"] .theme-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .currency-btn,
+[data-theme="dark"] .chatbot-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+[data-theme="dark"] .currency-btn:hover,
+[data-theme="dark"] .chatbot-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Dark mode specific chart colors */
+[data-theme="dark"] .chart-container canvas {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Dark mode for chatbot */
+[data-theme="dark"] .chatbot-modal .modal-content {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .chatbot-messages {
+  background: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .bot-message {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .user-message {
+  background: var(--accent);
+  color: white;
+}
+
+[data-theme="dark"] .chatbot-input-container input {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .chatbot-input-container input:focus {
+  border-color: var(--accent);
+}
+
+[data-theme="dark"] .chatbot-input-container button {
+  background: var(--accent);
+  color: white;
+}
+
+[data-theme="dark"] .chatbot-input-container button:hover {
+  background: var(--accent-hover);
 }
