@@ -6,15 +6,42 @@ let projects = [];
 let transactions = [];
 let charts = {};
 
+// Currency and Chatbot globals
+let currentCurrency = 'INR';
+let exchangeRate = 83.0; // INR to USD rate (will be updated)
+let chatbotHistory = [];
 
 const API_BASE_URL = '/api';
 
-
-const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', {
+// Currency conversion functions
+const formatCurrency = (amount, currency = currentCurrency) => {
+    const locale = currency === 'USD' ? 'en-US' : 'en-IN';
+    return new Intl.NumberFormat(locale, {
         style: 'currency',
-        currency: 'INR'
+        currency: currency
     }).format(amount);
+};
+
+const convertCurrency = (amount, fromCurrency = 'INR', toCurrency = currentCurrency) => {
+    if (fromCurrency === toCurrency) return amount;
+
+    if (fromCurrency === 'INR' && toCurrency === 'USD') {
+        return amount / exchangeRate;
+    } else if (fromCurrency === 'USD' && toCurrency === 'INR') {
+        return amount * exchangeRate;
+    }
+    return amount;
+};
+
+const updateExchangeRate = async () => {
+    try {
+        // In a real app, you'd fetch from an API like exchangerate-api.com
+        // For demo purposes, we'll use a mock rate
+        exchangeRate = 83.0 + (Math.random() - 0.5) * 2; // Simulate rate fluctuation
+        console.log(`Updated exchange rate: 1 USD = ${exchangeRate.toFixed(2)} INR`);
+    } catch (error) {
+        console.error('Failed to update exchange rate:', error);
+    }
 };
 
 
@@ -904,8 +931,8 @@ const ui = {
                             <i class="fas fa-eye"></i> View
                         </button>
                         <button class="btn btn-secondary btn-small edit-institution-btn" data-institution-id="${institution._id}">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
                     </div>
                 </div>
             `).join('');
@@ -2419,7 +2446,115 @@ const ui = {
         document.getElementById('transactionModalTitle').textContent = `Transaction Details - ${transaction._id}`;
         document.getElementById('transactionModalBody').innerHTML = content;
         document.getElementById('transactionModal').classList.add('show');
+    },
+
+
+    toggleCurrency() {
+        currentCurrency = currentCurrency === 'INR' ? 'USD' : 'INR';
+        const currencySymbol = currentCurrency === 'INR' ? '₹' : '$';
+
+
+        const currencyBtn = document.getElementById('currentCurrency');
+        if (currencyBtn) {
+            currencyBtn.textContent = currencySymbol;
+        }
+
+        console.log(`Currency switched to ${currentCurrency} (${currencySymbol})`);
+
+        this.updateAllCurrencyDisplays();
+
+        this.showToast(`Currency switched to ${currentCurrency}`, 'success');
+    },
+
+    updateAllCurrencyDisplays() {
+        console.log(`Updating all currency displays to ${currentCurrency}`);
+
+        const currencyElements = document.querySelectorAll('.summary-card h3, .amount, .budget, .card-content h3');
+        currencyElements.forEach(element => {
+            const text = element.textContent;
+            const amount = parseFloat(text.replace(/[^\d.-]/g, ''));
+            if (!isNaN(amount) && amount > 0) {
+                const convertedAmount = convertCurrency(amount, 'INR', currentCurrency);
+                const newText = formatCurrency(convertedAmount, currentCurrency);
+                element.textContent = newText;
+                console.log(`Updated: ${text} -> ${newText}`);
+            }
+        });
+
+
+        if (currentPage === 'dashboard') {
+            this.loadDashboard();
+        }
+
+        if (currentPage === 'budgets') {
+            this.loadBudgets();
+        }
+
+        if (currentPage === 'transactions') {
+            this.loadTransactions();
+        }
+
+
+        if (currentPage === 'projects') {
+            this.loadProjects();
+        }
+    },
+
+    updateDashboardCurrency() {
+
+        const summaryCards = document.querySelectorAll('.summary-card .card-content h3');
+        summaryCards.forEach(card => {
+            const text = card.textContent;
+            const amount = parseFloat(text.replace(/[^\d.-]/g, ''));
+            if (!isNaN(amount) && amount > 0) {
+                const convertedAmount = convertCurrency(amount, 'INR', currentCurrency);
+                card.textContent = formatCurrency(convertedAmount, currentCurrency);
+            }
+        });
+
+
+        this.updateDashboardCharts();
+    },
+
+    updateBudgetCurrency() {
+
+        const budgetAmounts = document.querySelectorAll('.budget-table .amount, .budget-summary .amount');
+        budgetAmounts.forEach(element => {
+            const text = element.textContent;
+            const amount = parseFloat(text.replace(/[^\d.-]/g, ''));
+            if (!isNaN(amount)) {
+                const convertedAmount = convertCurrency(amount, 'INR', currentCurrency);
+                element.textContent = formatCurrency(convertedAmount, currentCurrency);
+            }
+        });
+    },
+
+    updateTransactionCurrency() {
+
+        const transactionAmounts = document.querySelectorAll('.transaction-table .amount');
+        transactionAmounts.forEach(element => {
+            const text = element.textContent;
+            const amount = parseFloat(text.replace(/[^\d.-]/g, ''));
+            if (!isNaN(amount)) {
+                const convertedAmount = convertCurrency(amount, 'INR', currentCurrency);
+                element.textContent = formatCurrency(convertedAmount, currentCurrency);
+            }
+        });
+    },
+
+    updateProjectCurrency() {
+
+        const projectAmounts = document.querySelectorAll('.project-table .budget, .project-details .budget');
+        projectAmounts.forEach(element => {
+            const text = element.textContent;
+            const amount = parseFloat(text.replace(/[^\d.-]/g, ''));
+            if (!isNaN(amount)) {
+                const convertedAmount = convertCurrency(amount, 'INR', currentCurrency);
+                element.textContent = formatCurrency(convertedAmount, currentCurrency);
+            }
+        });
     }
+
 };
 
 
@@ -2733,11 +2868,168 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Submit feedback button clicked:', departmentId, departmentName);
             ui.submitFeedback(departmentId, departmentName);
         }
+
+        // Currency toggle
+        if (e.target.closest('#currencyToggle')) {
+            console.log('Currency toggle clicked');
+            ui.toggleCurrency();
+        }
+
+        // Chatbot toggle
+        if (e.target.closest('#chatbotToggle')) {
+            console.log('Chatbot toggle clicked');
+            ui.showChatbot();
+        }
+
+        // Chatbot modal close
+        if (e.target.closest('#chatbotModalClose')) {
+            console.log('Chatbot modal close clicked');
+            ui.hideChatbot();
+        }
+
+        // Chatbot send button
+        if (e.target.closest('#chatbotSendBtn')) {
+            console.log('Chatbot send button clicked');
+            const input = document.getElementById('chatbotInput');
+            if (input) {
+                const query = input.value.trim();
+                console.log('Chatbot input value:', query);
+                if (query) {
+                    console.log('Processing chatbot query:', query);
+                    ui.processChatbotQuery(query);
+                    input.value = '';
+                } else {
+                    console.log('No query text entered');
+                }
+            } else {
+                console.error('Chatbot input not found');
+            }
+        }
+
+        // Chatbot input enter key (using event delegation)
+        if (e.target.id === 'chatbotInput' && e.key === 'Enter') {
+            console.log('Enter key pressed in chatbot input');
+            const query = e.target.value.trim();
+            if (query) {
+                console.log('Processing chatbot query (Enter):', query);
+                ui.processChatbotQuery(query);
+                e.target.value = '';
+            } else {
+                console.log('No query text entered (Enter)');
+            }
+        }
+
+        // Chatbot test button
+        if (e.target.closest('#chatbotTestBtn')) {
+            console.log('Chatbot test button clicked');
+            ui.processChatbotQuery('Show me budget allocation');
+        }
     });
+
+    // Chatbot input enter key - wait for DOM to be ready
+    setTimeout(() => {
+        const chatbotInput = document.getElementById('chatbotInput');
+        if (chatbotInput) {
+            console.log('Chatbot input found, setting up enter key listener');
+            chatbotInput.addEventListener('keypress', (e) => {
+                console.log('Key pressed in chatbot input:', e.key);
+                if (e.key === 'Enter') {
+                    const query = e.target.value.trim();
+                    console.log('Enter key pressed, query:', query);
+                    if (query) {
+                        console.log('Processing chatbot query (Enter):', query);
+                        ui.processChatbotQuery(query);
+                        e.target.value = '';
+                    } else {
+                        console.log('No query text entered (Enter)');
+                    }
+                }
+            });
+        } else {
+            console.error('Chatbot input not found after timeout');
+        }
+    }, 1000);
+
+    // Initialize exchange rate update
+    updateExchangeRate();
+    setInterval(updateExchangeRate, 300000); // Update every 5 minutes
+
+    // Initialize chatbot and currency features
+    initializeFeatures();
 
     console.log('Event delegation system set up successfully');
 
 });
 
+
+// Initialize features function
+function initializeFeatures() {
+    console.log('Initializing chatbot and currency features...');
+
+    // Test currency conversion
+    const testAmount = 50000000;
+    const inrFormatted = formatCurrency(testAmount, 'INR');
+    const usdFormatted = formatCurrency(convertCurrency(testAmount, 'INR', 'USD'), 'USD');
+    console.log(`Currency test - INR: ${inrFormatted}, USD: ${usdFormatted}`);
+
+    // Test chatbot modal
+    const chatbotModal = document.getElementById('chatbotModal');
+    if (chatbotModal) {
+        console.log('Chatbot modal found and ready');
+    } else {
+        console.error('Chatbot modal not found');
+    }
+
+    // Test currency button
+    const currencyBtn = document.getElementById('currencyToggle');
+    if (currencyBtn) {
+        console.log('Currency toggle button found and ready');
+    } else {
+        console.error('Currency toggle button not found');
+    }
+
+    console.log('Feature initialization complete');
+}
+
+// Test function for debugging
+function testFeatures() {
+    console.log('=== Testing Features ===');
+
+    // Test currency conversion
+    console.log('Testing currency conversion...');
+    const testAmount = 50000000;
+    console.log(`Original: ${testAmount}`);
+    console.log(`INR: ${formatCurrency(testAmount, 'INR')}`);
+    console.log(`USD: ${formatCurrency(convertCurrency(testAmount, 'INR', 'USD'), 'USD')}`);
+
+    // Test chatbot
+    console.log('Testing chatbot...');
+    if (typeof ui !== 'undefined' && ui.showChatbot) {
+        console.log('Chatbot UI available');
+        ui.showChatbot();
+
+        // Test chatbot query directly
+        setTimeout(() => {
+            console.log('Testing chatbot query...');
+            ui.processChatbotQuery('Show me budget allocation');
+        }, 2000);
+    } else {
+        console.error('Chatbot UI not available');
+    }
+
+    // Test currency toggle
+    console.log('Testing currency toggle...');
+    if (typeof ui !== 'undefined' && ui.toggleCurrency) {
+        console.log('Currency toggle UI available');
+        ui.toggleCurrency();
+    } else {
+        console.error('Currency toggle UI not available');
+    }
+
+    console.log('=== Test Complete ===');
+}
+
+// Make test function globally available
+window.testFeatures = testFeatures;
 
 console.log('Financial Transparency Platform loaded successfully!');
