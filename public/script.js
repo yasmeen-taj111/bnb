@@ -900,10 +900,10 @@ const ui = {
                         </div>
                     </div>
                     <div class="card-actions">
-                        <button class="btn btn-primary btn-small" onclick="ui.viewInstitution('${institution._id}')">
+                        <button class="btn btn-primary btn-small" onclick="viewInstitution('${institution._id}')">
                             <i class="fas fa-eye"></i> View
                         </button>
-                            <button class="btn btn-secondary btn-small" onclick="ui.editInstitution('${institution._id}')">
+                            <button class="btn btn-secondary btn-small" onclick="editInstitution('${institution._id}')">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
                     </div>
@@ -1015,7 +1015,7 @@ const ui = {
                     <input type="tel" id="institutionPhone">
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="ui.hideModal()">Cancel</button>
+                    <button type="button" class="btn btn-secondary" onclick="hideModal()">Cancel</button>
                     <button type="submit" class="btn btn-primary">Add Institution</button>
                 </div>
             </form>
@@ -1117,10 +1117,10 @@ const ui = {
                 </div>
                 
                 <div class="form-actions">
-                    <button type="button" class="btn btn-primary" onclick="ui.editInstitution('${institution._id}')">
+                    <button type="button" class="btn btn-primary" onclick="editInstitution('${institution._id}')">
                         <i class="fas fa-edit"></i> Edit Institution
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="ui.hideModal()">
+                    <button type="button" class="btn btn-secondary" onclick="hideModal()">
                         Close
                     </button>
                 </div>
@@ -1168,10 +1168,10 @@ const ui = {
                     <textarea id="editInstitutionDescription" rows="3">${institution.description || ''}</textarea>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-primary" onclick="ui.saveInstitutionEdit('${institution._id}')">
+                    <button type="button" class="btn btn-primary" onclick="saveInstitutionEdit('${institution._id}')">
                         <i class="fas fa-save"></i> Save Changes
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="ui.hideModal()">
+                    <button type="button" class="btn btn-secondary" onclick="hideModal()">
                         Cancel
                     </button>
                 </div>
@@ -1475,15 +1475,15 @@ const ui = {
                     ${Math.round(dept.utilization)}%
                 </td>
                 <td>
-                    <button class="btn btn-primary btn-small" onclick="ui.viewDepartmentBudget('${dept.id}')">
+                    <button class="btn btn-primary btn-small" onclick="viewDepartmentBudget('${dept.id}')">
                         <i class="fas fa-eye"></i> View
                     </button>
-                    <button class="btn btn-info btn-small" onclick="ui.viewFeedbackDetails('${dept.name}', '${dept.id}')" style="margin-left: 5px;">
+                    <button class="btn btn-info btn-small view-feedback-btn" data-department-name="${dept.name}" data-department-id="${dept.id}" style="margin-left: 5px;">
                         <i class="fas fa-comments"></i> View Feedback
                     </button>
                 </td>
                 <td>
-                    <button class="feedback-button" onclick="ui.showFeedbackModal('${dept.name}', '${dept.id}')">
+                    <button class="feedback-button" data-department-name="${dept.name}" data-department-id="${dept.id}">
                         <i class="fas fa-comment"></i> Add Feedback
                     </button>
                 </td>
@@ -1522,8 +1522,8 @@ const ui = {
                     <input type="text" id="feedbackAuthor" placeholder="Enter your name">
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="ui.hideFeedbackModal()">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="ui.submitFeedback('${departmentId}', '${departmentName}')">Submit Feedback</button>
+                    <button type="button" class="btn btn-secondary">Cancel</button>
+                    <button type="button" class="btn btn-primary submit-feedback-btn" data-department-id="${departmentId}" data-department-name="${departmentName}">Submit Feedback</button>
                 </div>
             </div>
             <div class="mt-3">
@@ -1541,6 +1541,14 @@ const ui = {
 
     hideFeedbackModal() {
         document.getElementById('feedbackModal').classList.remove('show');
+    },
+
+    hideProjectModal() {
+        document.getElementById('projectModal').classList.remove('show');
+    },
+
+    hideTransactionModal() {
+        document.getElementById('transactionModal').classList.remove('show');
     },
 
     submitFeedback(departmentId, departmentName) {
@@ -1615,10 +1623,10 @@ const ui = {
             }
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-primary" onclick="ui.showFeedbackModal('${departmentName}', '${departmentId}')">
+                    <button type="button" class="btn btn-primary" data-department-name="${departmentName}" data-department-id="${departmentId}">
                         <i class="fas fa-plus"></i> Add New Feedback
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="ui.hideModal()">
+                    <button type="button" class="btn btn-secondary">
                         Close
                     </button>
                 </div>
@@ -1827,14 +1835,14 @@ const ui = {
                     </span>
                 </td>
                 <td>
-                    <button class="btn btn-primary btn-small" onclick="ui.viewTransaction('${transaction._id}')">
+                    <button class="btn btn-primary btn-small view-transaction-btn" data-transaction-id="${transaction._id}">
                         <i class="fas fa-eye"></i>
                     </button>
-                    ${transaction.status === 'pending' && currentUser?.role !== 'viewer' ? `
-                        <button class="btn btn-success btn-small" onclick="ui.approveTransaction('${transaction._id}')">
+                    ${transaction.status === 'Pending' && currentUser?.role !== 'viewer' ? `
+                        <button class="btn btn-success btn-small approve-transaction-btn" data-transaction-id="${transaction._id}">
                             <i class="fas fa-check"></i>
                         </button>
-                        <button class="btn btn-danger btn-small" onclick="ui.rejectTransaction('${transaction._id}')">
+                        <button class="btn btn-danger btn-small reject-transaction-btn" data-transaction-id="${transaction._id}">
                             <i class="fas fa-times"></i>
                         </button>
                     ` : ''}
@@ -1874,10 +1882,10 @@ const ui = {
                         </div>
                     </div>
                     <div class="card-actions">
-                        <button class="btn btn-primary btn-small" onclick="ui.viewProject('${project._id}')">
+                        <button class="btn btn-primary btn-small view-project-btn" data-project-id="${project._id}">
                             <i class="fas fa-eye"></i> View
                         </button>
-                        <button class="btn btn-secondary btn-small" onclick="ui.viewProjectProgress('${project._id}')">
+                        <button class="btn btn-secondary btn-small view-progress-btn" data-project-id="${project._id}">
                             <i class="fas fa-chart-line"></i> Progress
                         </button>
                     </div>
@@ -1983,7 +1991,7 @@ const ui = {
                     <textarea id="projectDescription" rows="3"></textarea>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="ui.hideModal()">Cancel</button>
+                    <button type="button" class="btn btn-secondary" onclick="hideModal()">Cancel</button>
                     <button type="submit" class="btn btn-primary">Add Project</button>
                 </div>
             </form>
@@ -2109,19 +2117,19 @@ const ui = {
                 </div>
                 
                 <div class="form-actions">
-                    <button type="button" class="btn btn-primary" onclick="ui.viewProjectProgress('${project._id}')">
+                    <button type="button" class="btn btn-primary view-progress-btn" data-project-id="${project._id}">
                         <i class="fas fa-chart-line"></i> View Progress
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="ui.hideModal()">
+                    <button type="button" class="btn btn-secondary">
                         Close
                     </button>
                 </div>
             </div>
         `;
 
-        document.getElementById('modalTitle').textContent = `Project Details - ${project.name}`;
-        document.getElementById('modalBody').innerHTML = content;
-        document.getElementById('modal').classList.add('show');
+        document.getElementById('projectModalTitle').textContent = `Project Details - ${project.name}`;
+        document.getElementById('projectModalBody').innerHTML = content;
+        document.getElementById('projectModal').classList.add('show');
     },
 
     viewProjectProgress(projectId) {
@@ -2192,19 +2200,19 @@ const ui = {
                 </div>
 
                 <div class="form-actions">
-                    <button type="button" class="btn btn-primary" onclick="ui.viewProject('${project._id}')">
+                    <button type="button" class="btn btn-primary view-project-btn" data-project-id="${project._id}">
                         <i class="fas fa-eye"></i> View Project Details
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="ui.hideModal()">
+                    <button type="button" class="btn btn-secondary">
                         Close
                     </button>
                 </div>
             </div>
         `;
 
-        document.getElementById('modalTitle').textContent = `Project Progress - ${project.name}`;
-        document.getElementById('modalBody').innerHTML = content;
-        document.getElementById('modal').classList.add('show');
+        document.getElementById('projectModalTitle').textContent = `Project Progress - ${project.name}`;
+        document.getElementById('projectModalBody').innerHTML = content;
+        document.getElementById('projectModal').classList.add('show');
     },
 
     calculateDaysRemaining(endDate) {
@@ -2252,9 +2260,18 @@ const ui = {
 
     async approveTransaction(id) {
         try {
-            await api.approveTransaction(id);
-            this.showToast('Transaction approved successfully', 'success');
-            await this.loadTransactions();
+            // Find the transaction in the sample data
+            const transaction = transactions.find(t => t._id === id);
+            if (transaction) {
+                transaction.status = 'Approved';
+                transaction.approvedBy = currentUser ? currentUser.name : 'Admin';
+                transaction.approvedDate = new Date().toISOString();
+
+                this.showToast('Transaction approved successfully', 'success');
+                await this.loadTransactions();
+            } else {
+                this.showToast('Transaction not found', 'error');
+            }
         } catch (error) {
             this.showToast(error.message, 'error');
         }
@@ -2262,12 +2279,98 @@ const ui = {
 
     async rejectTransaction(id) {
         try {
-            await api.rejectTransaction(id);
-            this.showToast('Transaction rejected', 'warning');
-            await this.loadTransactions();
+            // Find the transaction in the sample data
+            const transaction = transactions.find(t => t._id === id);
+            if (transaction) {
+                transaction.status = 'Rejected';
+                transaction.rejectedBy = currentUser ? currentUser.name : 'Admin';
+                transaction.rejectedDate = new Date().toISOString();
+
+                this.showToast('Transaction rejected', 'warning');
+                await this.loadTransactions();
+            } else {
+                this.showToast('Transaction not found', 'error');
+            }
         } catch (error) {
             this.showToast(error.message, 'error');
         }
+    },
+
+    viewTransactionDetails(transactionId) {
+        const transaction = transactions.find(t => t._id === transactionId);
+        if (!transaction) {
+            this.showToast('Transaction not found', 'error');
+            return;
+        }
+
+        const content = `
+            <div class="transaction-details">
+                <div class="detail-section">
+                    <h4>Transaction Information</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <label>Transaction ID:</label>
+                            <span><code>${transaction._id}</code></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Department:</label>
+                            <span>${transaction.department}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Category:</label>
+                            <span>${transaction.category}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Amount:</label>
+                            <span>${formatCurrency(transaction.amount)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Date:</label>
+                            <span>${formatDate(transaction.date)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Status:</label>
+                            <span class="status-badge status-${transaction.status.toLowerCase()}">${transaction.status}</span>
+                        </div>
+                        ${transaction.approvedBy ? `
+                        <div class="detail-item">
+                            <label>Approved By:</label>
+                            <span>${transaction.approvedBy}</span>
+                        </div>
+                        ` : ''}
+                        ${transaction.rejectedBy ? `
+                        <div class="detail-item">
+                            <label>Rejected By:</label>
+                            <span>${transaction.rejectedBy}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h4>Description</h4>
+                    <p>${transaction.description || 'No description available'}</p>
+                </div>
+                
+                <div class="form-actions">
+                    ${transaction.status === 'Pending' ? `
+                    <button type="button" class="btn btn-success approve-transaction-btn" data-transaction-id="${transaction._id}">
+                        <i class="fas fa-check"></i> Approve
+                    </button>
+                    <button type="button" class="btn btn-danger reject-transaction-btn" data-transaction-id="${transaction._id}">
+                        <i class="fas fa-times"></i> Reject
+                    </button>
+                    ` : ''}
+                    <button type="button" class="btn btn-secondary">
+                        Close
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('transactionModalTitle').textContent = `Transaction Details - ${transaction._id}`;
+        document.getElementById('transactionModalBody').innerHTML = content;
+        document.getElementById('transactionModal').classList.add('show');
     }
 };
 
@@ -2438,12 +2541,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Feedback modal close
+
     document.getElementById('feedbackModalClose').addEventListener('click', () => {
         ui.hideFeedbackModal();
     });
 
-    // Close feedback modal on outside click
+
     document.getElementById('feedbackModal').addEventListener('click', (e) => {
         if (e.target.id === 'feedbackModal') {
             ui.hideFeedbackModal();
@@ -2451,9 +2554,123 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
+    document.getElementById('projectModalClose').addEventListener('click', () => {
+        ui.hideProjectModal();
+    });
+
+
+    document.getElementById('projectModal').addEventListener('click', (e) => {
+        if (e.target.id === 'projectModal') {
+            ui.hideProjectModal();
+        }
+    });
+
+
+    document.getElementById('transactionModalClose').addEventListener('click', () => {
+        ui.hideTransactionModal();
+    });
+
+
+    document.getElementById('transactionModal').addEventListener('click', (e) => {
+        if (e.target.id === 'transactionModal') {
+            ui.hideTransactionModal();
+        }
+    });
+
+
     document.getElementById('navToggle').addEventListener('click', () => {
         document.getElementById('navMenu').classList.toggle('show');
     });
+
+
+    document.addEventListener('click', function (e) {
+        console.log('Button clicked:', e.target);
+
+        // Feedback buttons
+        if (e.target.closest('.feedback-button')) {
+            const button = e.target.closest('.feedback-button');
+            const departmentName = button.dataset.departmentName;
+            const departmentId = button.dataset.departmentId;
+            console.log('Feedback button clicked:', departmentName, departmentId);
+            ui.showFeedbackModal(departmentName, departmentId);
+        }
+
+
+        if (e.target.closest('.view-feedback-btn')) {
+            const button = e.target.closest('.view-feedback-btn');
+            const departmentName = button.dataset.departmentName;
+            const departmentId = button.dataset.departmentId;
+            console.log('View feedback button clicked:', departmentName, departmentId);
+            ui.viewFeedbackDetails(departmentName, departmentId);
+        }
+
+
+        if (e.target.closest('.view-project-btn')) {
+            const button = e.target.closest('.view-project-btn');
+            const projectId = button.dataset.projectId;
+            console.log('View project button clicked:', projectId);
+            ui.viewProject(projectId);
+        }
+
+
+        if (e.target.closest('.view-progress-btn')) {
+            const button = e.target.closest('.view-progress-btn');
+            const projectId = button.dataset.projectId;
+            console.log('View progress button clicked:', projectId);
+            ui.viewProjectProgress(projectId);
+        }
+
+
+        if (e.target.closest('.view-transaction-btn')) {
+            const button = e.target.closest('.view-transaction-btn');
+            const transactionId = button.dataset.transactionId;
+            console.log('View transaction button clicked:', transactionId);
+            ui.viewTransactionDetails(transactionId);
+        }
+
+
+        if (e.target.closest('.approve-transaction-btn')) {
+            const button = e.target.closest('.approve-transaction-btn');
+            const transactionId = button.dataset.transactionId;
+            console.log('Approve transaction button clicked:', transactionId);
+            ui.approveTransaction(transactionId);
+        }
+
+
+        if (e.target.closest('.reject-transaction-btn')) {
+            const button = e.target.closest('.reject-transaction-btn');
+            const transactionId = button.dataset.transactionId;
+            console.log('Reject transaction button clicked:', transactionId);
+            ui.rejectTransaction(transactionId);
+        }
+
+        // Test button
+        // if (e.target.closest('.test-button')) {
+        //     alert('Button click works!');
+        //     console.log('Test button clicked successfully');
+        // }
+
+
+        if (e.target.closest('.modal-close') || e.target.closest('.btn-secondary')) {
+            const modal = e.target.closest('.modal');
+            if (modal) {
+                modal.classList.remove('show');
+                console.log('Modal closed');
+            }
+        }
+
+
+        if (e.target.closest('.submit-feedback-btn')) {
+            const button = e.target.closest('.submit-feedback-btn');
+            const departmentId = button.dataset.departmentId;
+            const departmentName = button.dataset.departmentName;
+            console.log('Submit feedback button clicked:', departmentId, departmentName);
+            ui.submitFeedback(departmentId, departmentName);
+        }
+    });
+
+    console.log('Event delegation system set up successfully');
+
 });
 
 
