@@ -11,6 +11,13 @@ body {
   background-color: #f8f9fa;
 }
 
+footer {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  color: white;
+  text-align: center;
+  font-size: 20px;
+}
+
 .navbar {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
